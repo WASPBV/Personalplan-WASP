@@ -375,7 +375,7 @@ const vmeta=e=>S.vmeta[e]||{t:S.vtype[e]==='PW'||(!S.vtype[e]&&PWD.includes(Stri
 const isPW=e=>vmeta(e).t==='PW';
 const vfull=e=>{if(!/^V:/.test(e))return e;const m=vmeta(e);return e.slice(2)+' '+m.t+(m.d?' ('+m.d+')':'')};
 const vsym=e=>/^V:/.test(e)?(isPW(e)?'🚗':'🚐'):vi(e).trim();
-let sel=null,msg='',tab='plan',dl=null,pal='U',armed=false,armedC='',dayIdx=0,vw='week';
+let sel=null,msg='',tab='plan',dl=null,pal='U',armed=false,armedC='',dayIdx=0,vw=(()=>{try{const v=localStorage.getItem('pp_vw');if(v)return v}catch(e){}return (window.matchMedia&&matchMedia('(max-width:760px)').matches)?'card':'week'})();
 try{claude.use('downloads').then(x=>{dl=x;render()}).catch(()=>{})}catch(e){}
 const save=()=>{try{localStorage.setItem('pp6',JSON.stringify(S))}catch(e){}psSchedule()};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -1330,7 +1330,7 @@ document.addEventListener('click',ev=>{
   if(vo){const k=vo.dataset.vout.indexOf('|'),d=+vo.dataset.vout.slice(0,k),e=vo.dataset.vout.slice(k+1);sel=null;moveMany(d,[{i:-5,e}],-1);return}
   const wb=t.closest&&t.closest('[data-ws]');
   if(wb){snap();const[d,i]=wb.dataset.ws.split('|').map(Number),k=ad(S.wk,d),ar=S.ws[k]=S.ws[k]||[],x=ar.indexOf(i);P(d);wsSet('M'+i,k,x>=0?'':'W');sel=null;msg=wsMsg();save();render();return}
-  if(t.dataset&&t.dataset.vw){vw=t.dataset.vw;sel=null;msg='';render();return}
+  if(t.dataset&&t.dataset.vw){vw=t.dataset.vw;try{localStorage.setItem('pp_vw',vw)}catch(e){}sel=null;msg='';render();return}
   if(t.dataset&&t.dataset.day!==undefined){dayIdx=+t.dataset.day;sel=null;msg='';render();return}
   if(a==='selwk'&&sel){sel.wk=!sel.wk;render();return}
   if(a==='cancel'){sel=null;render();return}
