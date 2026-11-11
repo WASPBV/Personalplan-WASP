@@ -265,7 +265,7 @@ table.wk:not(.cmp) thead th:first-child{overflow:hidden}
 .evsub{font-size:9px;font-weight:700;text-decoration:underline;margin:4px 0 1px}
 .evbar{background:#d9d9d9;border:2px solid #000;text-align:center;font-weight:700;padding:3px;margin:10px 0 8px;font-size:13px}.evbar.hol{background:#f59e0b}
 .evnt{font-size:11px;white-space:nowrap}.evtel{font-size:10.5px;font-weight:700;white-space:nowrap}.evds{display:block;font-size:9.5px;color:#6b7280}
-@media(max-width:760px){.evg,.evg2,.evg3{grid-template-columns:1fr}.evpg{padding:8px}}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#1f6feb">
@@ -375,7 +375,7 @@ const vmeta=e=>S.vmeta[e]||{t:S.vtype[e]==='PW'||(!S.vtype[e]&&PWD.includes(Stri
 const isPW=e=>vmeta(e).t==='PW';
 const vfull=e=>{if(!/^V:/.test(e))return e;const m=vmeta(e);return e.slice(2)+' '+m.t+(m.d?' ('+m.d+')':'')};
 const vsym=e=>/^V:/.test(e)?(isPW(e)?'🚗':'🚐'):vi(e).trim();
-let sel=null,msg='',tab='plan',dl=null,pal='U',armed=false,armedC='',dayIdx=0,vw=(()=>{try{const v=localStorage.getItem('pp_vw');if(v)return v}catch(e){}return (window.matchMedia&&matchMedia('(max-width:760px)').matches)?'card':'week'})();
+let sel=null,msg='',tab='plan',dl=null,pal='U',armed=false,armedC='',dayIdx=0,vw='card';
 try{claude.use('downloads').then(x=>{dl=x;render()}).catch(()=>{})}catch(e){}
 const save=()=>{try{localStorage.setItem('pp6',JSON.stringify(S))}catch(e){}psSchedule()};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -602,7 +602,8 @@ const missTxt=(d,i)=>canAck(d,i)&&isAck(d,i)?'':missRaw(d,i);const missB=(d,i)=>
 const missRaw=(d,i)=>{if(!need(i)||inWs(d,i))return '';const x=P(d)[i].filter(e=>!isVeh(e));if(!x.length)return '';
   const f=x.filter(e=>roleAt(e,i)==='F').length,b=x.filter(e=>roleAt(e,i)==='B').length,p=[];
   if(f<1)p.push(drvTxt(i));if(f+b<3&&f>=1)p.push((3-f-b)+' Beifahrer fehlt');else if(f<1&&b<2)p.push((2-b)+' Beifahrer fehlt');return p.join(' · ')};
-function render(){render0();try{decor()}catch(e){console.error(e)}}
+function render(){render0();try{decor()}catch(e){console.error(e)}try{evFit()}catch(e){}}
+function evFit(){const p=document.querySelector('.evpg');if(!p)return;const PW=1040;p.style.zoom='';p.style.width='';const av=p.parentElement.clientWidth;if(av>0&&av<PW){p.style.width=PW+'px';p.style.maxWidth='none';p.style.zoom=String(av/PW)}else{p.style.maxWidth=''}}
 function render0(){
   syncKO();
   if(fixMV())save();
@@ -1330,7 +1331,7 @@ document.addEventListener('click',ev=>{
   if(vo){const k=vo.dataset.vout.indexOf('|'),d=+vo.dataset.vout.slice(0,k),e=vo.dataset.vout.slice(k+1);sel=null;moveMany(d,[{i:-5,e}],-1);return}
   const wb=t.closest&&t.closest('[data-ws]');
   if(wb){snap();const[d,i]=wb.dataset.ws.split('|').map(Number),k=ad(S.wk,d),ar=S.ws[k]=S.ws[k]||[],x=ar.indexOf(i);P(d);wsSet('M'+i,k,x>=0?'':'W');sel=null;msg=wsMsg();save();render();return}
-  if(t.dataset&&t.dataset.vw){vw=t.dataset.vw;try{localStorage.setItem('pp_vw',vw)}catch(e){}sel=null;msg='';render();return}
+  if(t.dataset&&t.dataset.vw){vw=t.dataset.vw;sel=null;msg='';render();return}
   if(t.dataset&&t.dataset.day!==undefined){dayIdx=+t.dataset.day;sel=null;msg='';render();return}
   if(a==='selwk'&&sel){sel.wk=!sel.wk;render();return}
   if(a==='cancel'){sel=null;render();return}
@@ -1717,7 +1718,7 @@ document.addEventListener('click',ev=>{const t=ev.target;if(t.closest&&t.closest
   const s=t.closest&&t.closest('[data-sec]'),r=t.closest&&t.closest('[data-rtg]');
   if(r){ev.stopPropagation();ev.preventDefault();const k=r.dataset.rtg;if(COL[k])delete COL[k];else COL[k]=1;colSave();render();return}
   if(s){ev.stopPropagation();ev.preventDefault();const k='s:'+s.dataset.sec;if(COL[k])delete COL[k];else COL[k]=1;colSave();render()}},true);
-let cm=isC();try{window.addEventListener('resize',()=>{const c=isC();if(c!==cm){cm=c;render()}})}catch(e){}
+let cm=isC();try{window.addEventListener('resize',()=>{const c=isC();if(c!==cm){cm=c;render()}else{try{evFit()}catch(e){}}})}catch(e){}
 render();
 psShow();
 psInit();
