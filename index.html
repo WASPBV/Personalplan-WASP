@@ -277,14 +277,16 @@ table.wk:not(.cmp) thead th:first-child{overflow:hidden}
 <h1 id="h">Personalplan</h1>
 <div class="st" id="ps"></div>
 <div id="app"></div>
+<script src="supabase-config.js"></script>
 <script>
-// Standalone-Betrieb (GitHub Pages): ersetzt die claude.ai-Laufzeit
+// Standalone-Betrieb (GitHub Pages): Downloads direkt über den Browser
 if(typeof window.claude==='undefined'){window.claude={use:async n=>{
   if(n==='downloads')return {save:async({filename,data})=>{const b=data instanceof Uint8Array?new Blob([data]):new Blob([data],{type:/\.html$/.test(filename)?'text/html':/\.json$/.test(filename)?'application/json':'text/plain'});
     const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=filename;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}};
   throw new Error('nicht verfügbar: '+n)}}}
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
 </script>
+<script src="supabase-db.js"></script>
 <script>
 const DAYS=['Mo','Di','Mi','Do','Fr'],MAXP=6,MINP=1,NM=16;
 const EXTRA=1,A='Di Mi Do Fr';
@@ -684,7 +686,7 @@ function teamHtml(){
   h+=`<div class="card"><b>Temporäre Mitarbeiter</b><div class="st">Angehakt = im Wochenplan verfügbar.</div>${S.emps.filter(isTmp).map(e=>`<div class="pr"><label class="exl"><input type="checkbox" data-tmpon="${esc(e)}"${tmpOn(e)?' checked':''}> <b>${esc(e)}</b> <span class="extb">Temp.</span>${S.tel[e]?' · '+esc(S.tel[e]):''}</label><button class="xs" data-rmtmp="${esc(e)}">Entfernen</button></div>`).join('')||'<div class="nt">Keine</div>'}<div class="fm"><input id="tmpn" placeholder="Name Vorname" style="width:220px"><input id="tmpt" placeholder="Telefon" style="width:150px"><button class="on" data-a="addtmp">Hinzufügen</button></div><div class="st">Temporäre stehen in der Reserve unter „Temporär“, können wie Beifahrer eingeteilt werden und erscheinen nicht im Ferienplan.</div></div>`;
   h+=`<details><summary>Namen und Maschinen bearbeiten</summary><label>Mitarbeiter (einer pro Zeile, ${S.emps.length})</label><textarea id="te" rows="10">${esc(S.emps.join('\n'))}</textarea><label>Maschinen (16) + Magazin / Substrat</label><textarea id="tm" rows="12">${esc(S.machines.join('\n'))}</textarea><label>Fahrzeuge (Nummer, Typ PW / Sprinter / Iveco und Beschreibung, z. B. 169.89 Sprinter (Jumbo), einer pro Zeile)</label><textarea id="tv" rows="10">${esc(VEHN.map(v=>/^V:/.test(v)?vfull(v):v).join('\n'))}</textarea><div class="bar"><button class="on" data-a="apply">Übernehmen</button></div></details>`;
   h+=`<details><summary>Funktionen per Liste einfügen</summary><div class="st">Namen einfügen (einer pro Zeile). Nicht aufgeführte Personen sind danach „Ohne Funktion“.</div>${FUN.filter(x=>x[0]).map(x=>x[0]).map(f=>`<label>${f}</label><textarea id="fl_${f}" rows="6">${esc(grp(f).join('\n'))}</textarea>`).join('')}<div class="bar"><button class="on" data-a="applyfn">Funktionen übernehmen</button></div></details>`;
-  h+=`<details><summary>Daten sichern / wiederherstellen</summary><div class="st">Speicher: ${esc(psState)}. Ist die Cloud verfügbar, bleiben alle Eingaben auch nach Aktualisierungen und auf anderen Geräten erhalten. Zusätzlich kannst du eine Sicherung als Datei anlegen.</div><div class="bar"><button data-a="backup">Daten sichern</button><label class="fb">Sicherung laden<input type="file" accept=".json,application/json" data-restore="1" hidden></label></div></details>`;
+  h+=`<details><summary>Daten sichern / wiederherstellen</summary><div class="st">Speicher: ${esc(psState)}. Ist die Cloud verfügbar, bleiben alle Eingaben auch nach Aktualisierungen und auf anderen Geräten erhalten. Zusätzlich kannst du eine Sicherung als Datei anlegen.</div><div class="bar"><button data-a="backup">Daten sichern</button>${window.__ppUser?`<button onclick="window.ppLogout&&ppLogout()">Abmelden (${esc(window.__ppUser)})</button>`:""}<label class="fb">Sicherung laden<input type="file" accept=".json,application/json" data-restore="1" hidden></label></div></details>`;
   return h;
 }
 const vtog=()=>`<div class="bar vtg" style="align-items:center"><div class="seg sm"><button class="${vw==='day'?'on':''}" data-vw="day">Tag</button><button class="${vw==='week'?'on':''}" data-vw="week">Woche</button>${tab==='plan'?`<button class="${vw==='card'?'on':''}" data-vw="card">Karten</button>`:''}</div>${tab==='plan'?`<button class="erg" data-a="erg" title="${vw==='day'?'Lücken in den Equipen an diesem Tag':'Lücken in den Equipen der ganzen Woche'} mit passendem Personal aus der Reserve füllen">Ergänzen</button>`:''}${tab==='plan'&&vw==='day'?`<button data-fill="${dayIdx}">Tag auffüllen</button><button data-a="cleard">Tag leeren</button>`:''}</div>`;
@@ -1553,8 +1555,8 @@ async function psInit(){
       // Ferienplan: Cloud ist massgebend (lokale Kopie wird nicht mehr zurückgemischt)
       S=N;normS();lastW={};psSchedule();
       try{localStorage.setItem('pp6',JSON.stringify(S))}catch(e){}
-      psState='Cloud geladen ✓ · live';psShow();render();liveSync();
-    }else{psState='Cloud wird eingerichtet …';psShow();psSchedule()}
+      psState=(window.__ppUser?'Supabase ✓ ('+window.__ppUser+')':'Cloud geladen ✓')+' · live';psShow();render();liveSync();
+    }else{if(!confirm('Die Datenbank ist noch leer.\n\nSollen die Daten aus diesem Browser ('+(S.emps||[]).length+' Mitarbeiter) jetzt hochgeladen werden?\n\nTipp: Vorher unter Team → «Sicherung laden» deine Daten einlesen.')){DBH=null;psState='nicht verbunden – zuerst Sicherung laden, dann Seite neu laden';psShow();return}psState='Datenbank wird eingerichtet …';psShow();psSchedule();liveSync()}
   }catch(e){psState='nur in diesem Browser (Cloud-Fehler)';psShow()}
 }
 

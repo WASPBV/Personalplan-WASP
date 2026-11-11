@@ -12,6 +12,9 @@ Sie lässt sich auf PC, Tablet und Handy wie eine App installieren und funktioni
 | `index.html` | Die App |
 | `manifest.webmanifest` | Damit die App installierbar ist (Name, Icon, Farben) |
 | `sw.js` | Offline-Speicher, App startet auch ohne Internet |
+| `supabase-config.js` | Supabase-Zugangsdaten (siehe ANLEITUNG-SUPABASE.md) |
+| `supabase-db.js` | Speicherung + Login über Supabase (EU) |
+| `supabase-einrichten.sql` | Einmaliges Einrichtungs-Skript für die Datenbank |
 | `icon-192.png`, `icon-512.png` | App-Icons |
 
 ## Einrichten auf GitHub (einmalig, ca. 10 Minuten)
@@ -52,7 +55,6 @@ Sie lässt sich auf PC, Tablet und Handy wie eine App installieren und funktioni
 Neue Version von `index.html` erhalten → im Repository die Datei `index.html` anklicken → Stift-Symbol bzw. **Add file → Upload files** → neue Datei hochladen → **Commit changes**.
 Die Daten im Browser bleiben dabei erhalten.
 
-## Später: gemeinsame Daten für mehrere Geräte
+## Gemeinsame Daten über Supabase
 
-Soll der Plan live auf allen Geräten gleich sein (wie bisher bei claude.ai), braucht es zusätzlich eine kleine Datenbank
-(z. B. Microsoft 365 der Firma, ein eigener Server/NAS oder Schweizer Hosting). Die App ist dafür vorbereitet.
+Siehe **ANLEITUNG-SUPABASE.md** – danach sehen alle Freigeschalteten denselben, aktuellen Plan.
