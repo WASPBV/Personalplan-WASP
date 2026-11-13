@@ -2,7 +2,14 @@
 <html lang="de"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Einsatzplan – WASP</title>
+<title>Einsatzplan WASP</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Einsatzplan WASP">
+<meta property="og:description" content="Antippen = aktueller Einsatzplan (ohne Login)">
+<meta property="og:image" content="og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="icon-192.png">
 <style>
 html,body{margin:0;background:#e5e7eb;font:15px system-ui,Segoe UI,Arial,sans-serif;color:#111}
@@ -29,7 +36,7 @@ function show(r){if(r.updated_at===last)return;last=r.updated_at;
   var f=p.querySelector('iframe');f.onload=function(){try{var d=f.contentDocument;var b=d.querySelector('button');if(b)b.remove();f.style.height=(d.documentElement.scrollHeight+4)+'px'}catch(e){}};
   f.srcdoc=r.html;var t=new Date(r.updated_at);
   document.getElementById('st').textContent='Stand '+t.toLocaleDateString('de-CH')+' '+t.toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('top').hidden=false;fit()}
+  document.getElementById('top').hidden=false;var kw=new URLSearchParams(location.search).get('kw');if(/^\d{1,2}$/.test(kw||''))document.title='Einsatzplan WASP – KW '+kw;fit()}
 function load(first){
   if(!C.url||!C.anonKey){fail('App ist nicht eingerichtet.');return}
   if(!/^[0-9a-f]{32}$/.test(k)){fail('Ungültiger Link.');return}
