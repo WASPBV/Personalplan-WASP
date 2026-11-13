@@ -49,7 +49,7 @@ async function init(){
   const {data:ok,error}=await sb.from('pp_users').select('email').limit(1);
   if(error||!ok||!ok.length){await sb.auth.signOut();box(`<b>Kein Zugriff</b><div style="margin:10px 0;color:#475569">${email} ist nicht freigeschaltet. Bitte beim Administrator des Personalplans melden.</div><button onclick="this.closest('#sbov').remove()" style="padding:8px 14px;border-radius:8px;border:1px solid #cbd5e1;background:#fff">OK</button>`);throw new Error('kein Zugriff')}
   window.__ppUser=email;window.ppLogout=async()=>{await sb.auth.signOut();try{localStorage.removeItem('pp6')}catch(e){}location.reload()};
-  realtime();return DB}
+  window.__sb=sb;realtime();return DB}
 window.__sbDB={on:ON,DB,cache};
 const prev=window.claude;
 window.claude={use:async n=>{if(n==='db'){if(!ON)throw new Error('Supabase nicht eingerichtet');try{return await init()}catch(e){if(!/nicht angemeldet|kein Zugriff/.test(e.message||''))box(`<b>Verbindung fehlgeschlagen</b><div style="margin:10px 0;color:#475569">${String(e.message||e)}</div><div style="font-size:13px;color:#64748b">Die App arbeitet jetzt nur in diesem Browser.</div><button onclick="this.closest('#sbov').remove()" style="margin-top:10px;padding:8px 14px;border-radius:8px;border:1px solid #cbd5e1;background:#fff">OK</button>`);throw e}}

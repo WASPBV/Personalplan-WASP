@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Einsatzplan – WASP</title>
+<link rel="icon" href="icon-192.png">
+<style>
+html,body{margin:0;background:#e5e7eb;font:15px system-ui,Segoe UI,Arial,sans-serif;color:#111}
+#top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;background:#fff;border-bottom:1px solid #cbd5e1;font-size:13px;color:#475569}
+#top b{color:#111}
+#wrap{padding:10px;display:flex;justify-content:center}
+#pg{width:760px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.2);transform-origin:top left}
+#pg iframe{display:block;width:760px;border:0}
+#msg{max-width:420px;margin:60px auto;background:#fff;border-radius:12px;padding:22px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+button{font:13px system-ui,Arial;padding:5px 10px;border:1px solid #cbd5e1;border-radius:7px;background:#fff;cursor:pointer}
+@media print{#top{display:none}#wrap{padding:0}#pg{box-shadow:none;zoom:1!important}}
+</style>
+<script src="supabase-config.js"></script>
+</head><body>
+<div id="top" hidden><span><b>Einsatzplan</b> · <span id="st"></span></span><button onclick="print()">Drucken</button></div>
+<div id="wrap"><div id="msg">Einsatzplan wird geladen …</div></div>
+<script>
+(function(){
+var C=window.PP_SUPABASE||{},k=new URLSearchParams(location.search).get('k')||'',last='',wrap=document.getElementById('wrap');
+function fail(t){wrap.innerHTML='<div id="msg">'+t+'</div>';document.getElementById('top').hidden=true}
+function fit(){var p=document.getElementById('pg');if(!p)return;var w=Math.min(1,(window.innerWidth-20)/760);p.style.zoom=w<1?w:''}
+function show(r){if(r.updated_at===last)return;last=r.updated_at;
+  var p=document.getElementById('pg');if(!p){wrap.innerHTML='<div id="pg"><iframe title="Einsatzplan"></iframe></div>';p=document.getElementById('pg')}
+  var f=p.querySelector('iframe');f.onload=function(){try{var d=f.contentDocument;var b=d.querySelector('button');if(b)b.remove();f.style.height=(d.documentElement.scrollHeight+4)+'px'}catch(e){}};
+  f.srcdoc=r.html;var t=new Date(r.updated_at);
+  document.getElementById('st').textContent='Stand '+t.toLocaleDateString('de-CH')+' '+t.toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('top').hidden=false;fit()}
+function load(first){
+  if(!C.url||!C.anonKey){fail('App ist nicht eingerichtet.');return}
+  if(!/^[0-9a-f]{32}$/.test(k)){fail('Ungültiger Link.');return}
+  fetch(C.url.replace(/\/$/,'')+'/rest/v1/rpc/pp_share_get',{method:'POST',headers:{'apikey':C.anonKey,'Content-Type':'application/json'},body:JSON.stringify({t:k}),cache:'no-store'})
+  .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()})
+  .then(function(a){if(!a||!a.length){fail('Dieser Link ist abgelaufen oder wurde gesperrt.');return}show(a[0])})
+  .catch(function(e){if(first)fail('Einsatzplan konnte nicht geladen werden ('+e.message+').')})}
+load(true);setInterval(function(){if(!document.hidden)load(false)},60000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)load(false)});
+window.addEventListener('resize',fit);
+})();
+</script>
+</body></html>

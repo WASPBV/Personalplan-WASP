@@ -1065,9 +1065,29 @@ function einsatzXlsx(D){
 }
 function showVersand(){
   const D=einsatzData(),o=document.createElement('div');o.className='ov';o.id='versand';
-  o.innerHTML='<div class="ovb"><b>📤 Einsatzplan – '+esc(D.kw)+' ('+esc(D.range)+')</b><span><button data-a="vxlsx">⬇ Excel (.xlsx)</button> <button data-a="vprint">⬇ PDF</button> <button data-a="vhtml">⬇ HTML</button> <button data-a="vclose">Schliessen</button></span></div><div class="ovs" style="background:#e5e7eb;padding:12px"><iframe class="ovf" style="width:820px;height:1400px;margin:0 auto;box-shadow:0 2px 10px rgba(0,0,0,.2)"></iframe></div><div class="st" id="vmsg" style="padding:4px 12px"></div>';
-  document.body.appendChild(o);o.querySelector('iframe').srcdoc=einsatzHtml(D);
+  o.innerHTML='<div class="ovb"><b>📤 Einsatzplan – '+esc(D.kw)+' ('+esc(D.range)+')</b><span><button data-a="vxlsx">⬇ Excel (.xlsx)</button> <button data-a="vprint">⬇ PDF</button> <button data-a="vhtml">⬇ HTML</button> <button data-a="vclose">Schliessen</button></span></div><div id="vshare" style="padding:6px 12px"></div><div class="ovs" style="background:#e5e7eb;padding:12px"><iframe class="ovf" style="width:820px;height:1400px;margin:0 auto;box-shadow:0 2px 10px rgba(0,0,0,.2)"></iframe></div><div class="st" id="vmsg" style="padding:4px 12px"></div>';
+  document.body.appendChild(o);o.querySelector('iframe').srcdoc=einsatzHtml(D);shShow().catch(()=>{});
 }
+
+// --- Einsatzplan per Link teilen (nur mit Supabase) ---
+let SHM=null,shT=null;
+const shOn=()=>!!window.__sb;
+async function shLoad(){if(SHM||!shOn())return SHM||{};const {data}=await window.__sb.from('pp_share').select('wk,token');SHM={};(data||[]).forEach(x=>SHM[x.wk]=x.token);return SHM}
+const shUrl=t=>location.origin+location.pathname.replace(/[^/]*$/,'')+'ansicht.html?k='+t;
+const shTok=()=>{const a=new Uint8Array(16);crypto.getRandomValues(a);return Array.from(a,b=>b.toString(16).padStart(2,'0')).join('')};
+async function shUp(wk){await shLoad();const t=SHM[wk]||shTok();if(wk!==S.wk)return;
+  const exp=new Date(pd(ad(wk,18)).getTime()).toISOString();
+  const {error}=await window.__sb.from('pp_share').upsert({token:t,wk,html:einsatzHtml(einsatzData()),updated_at:new Date().toISOString(),expires_at:exp},{onConflict:'wk'});
+  if(error)throw error;SHM[wk]=t;return t}
+function shAuto(){if(!shOn())return;clearTimeout(shT);shT=setTimeout(async()=>{try{await shLoad();if(SHM[S.wk])await shUp(S.wk)}catch(e){}},2500)}
+async function shShow(){const b=document.getElementById('vshare');if(!b||!shOn())return;await shLoad();const t=SHM[S.wk];
+  b.innerHTML=t?'<b>🔗 Link für diese Woche</b> <input readonly value="'+esc(shUrl(t))+'" style="width:min(520px,100%);font-size:12px;padding:4px 6px" onclick="this.select()"> <button data-a="vlcopy">Kopieren</button>'+(navigator.share?' <button data-a="vlsend">Teilen …</button>':'')+' <button data-a="vldel">Link sperren</button><div class="st">Ohne Login sichtbar für alle, die den Link haben. Aktualisiert sich automatisch bei jeder Änderung dieser Woche. Läuft 2 Wochen nach der Woche ab.</div>':'<button data-a="vlink">🔗 Link erstellen</button> <span class="st">Reine Ansicht ohne Login – statt PDF versenden.</span>'}
+async function shAct(a){const m=document.getElementById('vmsg'),say=x=>{if(m)m.textContent=x};
+  try{if(a==='vlink'){say('Link wird erstellt …');await shUp(S.wk);await shShow();say('Link erstellt.')}
+    else if(a==='vlcopy'){const u=shUrl(SHM[S.wk]);try{await navigator.clipboard.writeText(u);say('Link kopiert – jetzt in WhatsApp oder Mail einfügen.')}catch(e){say('Bitte Link markieren und kopieren.')}}
+    else if(a==='vlsend'){const D=einsatzData();try{await navigator.share({title:'Einsatzplan '+D.kw,text:'Einsatzplan '+D.kw+' ('+D.range+')',url:shUrl(SHM[S.wk])})}catch(e){}}
+    else if(a==='vldel'){if(!confirm('Link für diese Woche sperren? Wer ihn hat, sieht danach nichts mehr.'))return;const {error}=await window.__sb.from('pp_share').delete().eq('wk',S.wk);if(error)throw error;delete SHM[S.wk];await shShow();say('Link gesperrt.')}
+  }catch(e){say('Fehler: '+(e&&e.message||e)+(/pp_share/.test(String(e&&e.message))?' – SQL für das Teilen in Supabase ausführen.':''))}}
 // --- PDF-Erzeugung (ohne Bibliothek) für Einsatzplan ---
 function einsatzPdf(D){
   const mc=document.createElement('canvas').getContext('2d');
@@ -1338,6 +1358,7 @@ document.addEventListener('click',ev=>{
   if(a==='prev'){showPrev();return}
   if(a==='versand'){showVersand();return}
   if(a==='vclose'){const o=document.getElementById('versand');if(o)o.remove();return}
+  if(a==='vlink'||a==='vlcopy'||a==='vlsend'||a==='vldel'){shAct(a);return}
   if(a==='vxlsx'){versandSave('x');return}
   if(a==='vhtml'){versandSave('h');return}
   if(a==='vprint'){versandSave('p');return}
@@ -1524,7 +1545,7 @@ async function psFlush(){
     const d=packS();
     for(const k of Object.keys(d)){const str=stab(d[k]);if(lastW[k]!==str){await DBH.doc(k).set(d[k]);lastW[k]=str}}
     for(const k of Object.keys(lastW)){if(!(k in d)){await DBH.doc(k).delete();delete lastW[k]}}
-    psState='Cloud gesichert ✓';
+    psState='Cloud gesichert ✓';try{shAuto()}catch(e){}
   }catch(e){
     const c=e&&e.code;
     if(c==='invalid_argument'||c==='not_granted'||c==='revoked'){psRO=true;psState='nur in diesem Browser (kein Schreibrecht in der Cloud)'}
