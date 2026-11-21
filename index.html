@@ -401,7 +401,7 @@ body.roview #app .acts [data-a=erg],body.roview #app .acts [data-a=vorwo],body.r
  #app.flym>.wrap:not(.cw){width:fit-content!important;max-width:100%}
  #h,#ps{max-width:1040px;margin-left:auto!important;margin-right:auto!important;padding-left:0;padding-right:0}
 }
-</style></head>
+</style><style>#app .cel{position:relative}#app .cel .celp{position:absolute;top:8px;right:44px;font-size:12px!important;padding:3px 9px!important;min-height:0!important;border-radius:8px}@media(max-width:760px){#app .cel .celp{position:static;margin-top:6px}}</style></head>
 <body>
 <h1 id="h">Personalplan</h1>
 <div class="st" id="ps"></div>
@@ -1437,7 +1437,7 @@ function celHtml(){const wk=S.wk,days=[0,1,2,3,4,5,6].map(d=>ad(wk,d)),out=[],ju
   const drv=S.emps.filter(e=>!gone(e)&&!isExt(e)&&!isTmp(e)&&['Chauffeur','Springer'].includes(S.func[e])).sort((a,b)=>a.localeCompare(b,'de')),open=drv.filter(e=>!done[e]);
   if(!out.length&&!jub.length&&!dex.length&&!dso.length&&!open.length)return '';if(celHide===wk)return '';
   const wd=ds=>['So','Mo','Di','Mi','Do','Fr','Sa'][pd(ds).getDay()]+' '+dm(ds);const by=(a,b)=>a.ds.localeCompare(b.ds);
-  return `<div class="cel">${out.length?`<div><b>🎂 Geburtstage diese Woche</b><ul>${out.sort(by).map(x=>`<li><span class="celd">${wd(x.ds)}</span> ${esc(x.e)} – wird ${x.n}</li>`).join('')}</ul></div>`:''}${jub.length?`<div><b>🏅 Dienstjubiläum</b><ul>${jub.sort(by).map(x=>`<li><span class="celd">${wd(x.ds)}</span> ${esc(x.e)} – <b>${x.n} Jahre</b> bei uns</li>`).join('')}</ul></div>`:''}${open.length?`<div class="celarv"><b>🚚 ARV-Belehrung ${MON[+mo.slice(5)-1]} ${mo.slice(0,4)}</b> <span class="cm">${drv.length-open.length} / ${drv.length} erledigt</span><button class="xs arvall" data-arvall="${mo}">✓ alle erledigt</button><ul>${open.map(e=>`<li><label><input type="checkbox" data-arv="${mo}|${esc(e)}"> ${esc(e)}</label></li>`).join('')}</ul></div>`:''}${dex.length||dso.length?`<div class="celdoc"><b>📄 Dokumente</b>${dso.length?`<div class="co" style="margin-top:3px">Läuft in den nächsten 90 Tagen ab:</div><ul>${dso.map(x=>`<li>${esc(x[0])}: <span class="co">${esc(x[1])}</span></li>`).join('')}</ul>`:''}${dex.length?`<div class="cx" style="margin-top:3px;font-weight:700">Abgelaufen (${dex.length}):</div><ul>${dex.slice(0,8).map(x=>`<li>${esc(x[0])}: <span class="cx">${esc(x[1])}</span></li>`).join('')}</ul>${dex.length>8?`<details><summary>… ${dex.length-8} weitere</summary><ul>${dex.slice(8).map(x=>`<li>${esc(x[0])}: <span class="cx">${esc(x[1])}</span></li>`).join('')}</ul></details>`:''}`:''}</div>`:''}<button class="xs celx" data-celhide="${wk}" title="Für diese Woche ausblenden">✕</button></div>`}
+  return `<div class="cel">${out.length?`<div><b>🎂 Geburtstage diese Woche</b><ul>${out.sort(by).map(x=>`<li><span class="celd">${wd(x.ds)}</span> ${esc(x.e)} – wird ${x.n}</li>`).join('')}</ul></div>`:''}${jub.length?`<div><b>🏅 Dienstjubiläum</b><ul>${jub.sort(by).map(x=>`<li><span class="celd">${wd(x.ds)}</span> ${esc(x.e)} – <b>${x.n} Jahre</b> bei uns</li>`).join('')}</ul></div>`:''}${open.length?`<div class="celarv"><b>🚚 ARV-Belehrung ${MON[+mo.slice(5)-1]} ${mo.slice(0,4)}</b> <span class="cm">${drv.length-open.length} / ${drv.length} erledigt</span><button class="xs arvall" data-arvall="${mo}">✓ alle erledigt</button><ul>${open.map(e=>`<li><label><input type="checkbox" data-arv="${mo}|${esc(e)}"> ${esc(e)}</label></li>`).join('')}</ul></div>`:''}${dex.length||dso.length?`<div class="celdoc"><b>📄 Dokumente</b>${dso.length?`<div class="co" style="margin-top:3px">Läuft in den nächsten 90 Tagen ab:</div><ul>${dso.map(x=>`<li>${esc(x[0])}: <span class="co">${esc(x[1])}</span></li>`).join('')}</ul>`:''}${dex.length?`<div class="cx" style="margin-top:3px;font-weight:700">Abgelaufen (${dex.length}):</div><ul>${dex.slice(0,8).map(x=>`<li>${esc(x[0])}: <span class="cx">${esc(x[1])}</span></li>`).join('')}</ul>${dex.length>8?`<details><summary>… ${dex.length-8} weitere</summary><ul>${dex.slice(8).map(x=>`<li>${esc(x[0])}: <span class="cx">${esc(x[1])}</span></li>`).join('')}</ul></details>`:''}`:''}</div>`:''}<button class="xs celx" data-celhide="${wk}" title="Für diese Woche ausblenden">✕</button><button class="xs celp" data-celpdf="1" title="Als PDF speichern und drucken">📄 PDF / Drucken</button></div>`}
 document.addEventListener('click',ev=>{const b=ev.target.closest&&ev.target.closest('[data-celhide]');if(!b)return;ev.stopPropagation();celHide=b.dataset.celhide;try{localStorage.setItem('pp_celhide',celHide)}catch(e){}render()},true);
 
 document.addEventListener('change',ev=>{const t=ev.target;if(!t||!t.dataset||!t.dataset.arv)return;const [mo,e]=t.dataset.arv.split('|');S.arv=S.arv||{};const m=S.arv[mo]=S.arv[mo]||{};if(t.checked)m[e]=hrTd();else delete m[e];save();render()});
@@ -1711,6 +1711,43 @@ let roT=null;const roMsg=()=>{let d=document.getElementById('roToast');if(!d){d=
 const roBlock=(ev,toast)=>{if(!rOn()||isAdm()||curLvl()!=='r')return;const t=ev.target;if(!t||!t.closest||!t.closest('#app,.evpg,.ovl,.modal,body'))return;if(t.closest(RO_OK))return;ev.stopPropagation();if(toast){ev.preventDefault();roMsg();if(ev.type==='change'||ev.type==='input')setTimeout(render,50)}};
 ['click','change','input','submit'].forEach(n=>document.addEventListener(n,ev=>roBlock(ev,true),true));
 ['pointerdown','mousedown','touchstart','dragstart','drop','keydown'].forEach(n=>document.addEventListener(n,ev=>roBlock(ev,false),true));
+
+// --- Erinnerungen (violette Box) als PDF ---
+function celPdf(){const box=document.querySelector('#app .cel');if(!box)return null;const secs=[];
+  [...box.children].filter(x=>x.tagName==='DIV').forEach(d=>{const hb=d.querySelector('b');if(!hb)return;const cm=d.querySelector('.cm');const arv=d.classList.contains('celarv');
+    const items=[...d.querySelectorAll('li')].map(li=>li.textContent.replace(/\s+/g,' ').trim()).filter(Boolean);
+    const subs=[...d.querySelectorAll(':scope > .co, :scope > .cx')].map(x=>x.textContent.trim());
+    secs.push({h:hb.textContent.replace(/^[^\wÄÖÜäöü]+/,'').trim()+(cm?'  ('+cm.textContent.trim()+')':''),items,arv,subs})});
+  if(!secs.length)return null;
+  const mc=document.createElement('canvas').getContext('2d');const tw=(t,sz,b)=>{mc.font=(b?'bold ':'')+sz+'px Arial, Helvetica, sans-serif';return mc.measureText(t).width};
+  const W=595,H=842,M=40;const enc=t=>{const out=[];for(const ch of String(t)){let c=ch.charCodeAt(0);const map={'€':128,'„':132,'…':133,'–':150,'—':151,'’':146,'“':147,'”':148,'•':149,'✓':118};if(map[ch])c=map[ch];else if(c>255)c=63;out.push(c)}return out};
+  const es=t=>enc(t).map(c=>c===40||c===41||c===92?'\\'+String.fromCharCode(c):c<32||c>126?'\\'+c.toString(8).padStart(3,'0'):String.fromCharCode(c)).join('');
+  const pages=[];let ops=[],y=0;const n=new Date(),stand=pad(n.getDate())+'.'+pad(n.getMonth()+1)+'.'+n.getFullYear();
+  const txt=(x,yy,t,sz,b,rgb)=>ops.push((rgb||'0 0 0')+' rg BT /'+(b?'F2':'F1')+' '+sz+' Tf '+x.toFixed(1)+' '+(H-yy).toFixed(1)+' Td ('+es(t)+') Tj ET');
+  const line=(x1,yy,x2,g,w)=>ops.push(g+' G '+(w||0.5)+' w '+x1.toFixed(1)+' '+(H-yy).toFixed(1)+' m '+x2.toFixed(1)+' '+(H-yy).toFixed(1)+' l S');
+  const sq=(x,yy)=>ops.push('0 G 0.8 w '+x.toFixed(1)+' '+(H-yy).toFixed(1)+' 9 9 re S');
+  const np=()=>{if(ops.length)pages.push(ops);ops=[];txt(M,M+16,'Erinnerungen – Personalplan KW '+kw(S.wk)+' / '+kwy(S.wk),15,1);txt(W-M-tw('Stand '+stand,9),M+16,'Stand '+stand,9,0,'0.4 0.4 0.4');line(M,M+24,W-M,'0',1);y=M+46};
+  const need=h=>{if(y+h>H-M)np()};
+  const wrap=(t,max,sz)=>{const w=t.split(' '),L=[];let c='';w.forEach(x=>{const z=c?c+' '+x:x;if(tw(z,sz)>max&&c){L.push(c);c=x}else c=z});if(c)L.push(c);return L};
+  np();
+  secs.forEach(s=>{need(40);txt(M,y,s.h,12,1,'0.36 0.13 0.71');y+=8;line(M,y,W-M,'0.8',0.5);y+=14;
+    s.subs.forEach(t=>{need(14);txt(M,y,t,9.5,1,'0.4 0.4 0.4');y+=14});
+    if(s.arv){const cols=2,cw=(W-2*M)/cols,rows=Math.ceil(s.items.length/cols);for(let r=0;r<rows;r++){need(18);for(let c=0;c<cols;c++){const it=s.items[c*rows+r];if(!it)continue;const x=M+c*cw;sq(x,y+1.5);txt(x+15,y,it,10);line(x+15+Math.max(130,tw(it,10)+8),y+2,x+cw-12,'0.75',0.4)}y+=18}
+      need(30);y+=8;txt(M,y,'Unterschrift / Datum: ______________________________',10,0,'0.3 0.3 0.3');y+=10}
+    else s.items.forEach(it=>{wrap('•  '+it,W-2*M-10,10).forEach((l,i)=>{need(14);txt(M+(i?12:0),y,l,10);y+=14})});
+    y+=14});
+  pages.push(ops);
+  const objs=[];const add=s=>{objs.push(s);return objs.length};const cat=add(''),pg=add(''),f1=add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>'),f2=add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+  const kids=[];pages.forEach(o=>{const st=o.join('\n');const ci=add('<< /Length '+st.length+' >>\nstream\n'+st+'\nendstream');kids.push(add('<< /Type /Page /Parent '+pg+' 0 R /MediaBox [0 0 '+W+' '+H+'] /Resources << /Font << /F1 '+f1+' 0 R /F2 '+f2+' 0 R >> >> /Contents '+ci+' 0 R >>'))});
+  objs[cat-1]='<< /Type /Catalog /Pages '+pg+' 0 R >>';objs[pg-1]='<< /Type /Pages /Kids ['+kids.map(k=>k+' 0 R').join(' ')+'] /Count '+kids.length+' >>';
+  const bin=s=>{const a=new Uint8Array(s.length);for(let i=0;i<s.length;i++)a[i]=s.charCodeAt(i)&255;return a};
+  const parts=[bin('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n')];let pos=parts[0].length;const offs=[];objs.forEach((o,i)=>{offs.push(pos);const b=bin((i+1)+' 0 obj\n'+o+'\nendobj\n');parts.push(b);pos+=b.length});
+  parts.push(bin('xref\n0 '+(objs.length+1)+'\n0000000000 65535 f \n'+offs.map(o=>String(o).padStart(10,'0')+' 00000 n \n').join('')+'trailer\n<< /Size '+(objs.length+1)+' /Root '+cat+' 0 R >>\nstartxref\n'+pos+'\n%%EOF'));
+  const out=new Uint8Array(parts.reduce((a,b)=>a+b.length,0));let p=0;parts.forEach(b=>{out.set(b,p);p+=b.length});return out}
+document.addEventListener('click',async ev=>{const b=ev.target.closest&&ev.target.closest('[data-celpdf]');if(!b)return;ev.stopPropagation();ev.preventDefault();
+  const data=celPdf();if(!data)return;const fn='Erinnerungen_KW'+kw(S.wk)+'_'+kwy(S.wk)+'.pdf';
+  if(!dl){msg='Speichern ist in dieser Ansicht nicht möglich.';render();return}
+  try{await dl.save({filename:fn,data});msg='PDF gespeichert: '+fn+' – öffnen und drucken.'}catch(er){const c=er&&er.code;msg=c==='declined'?'Speichern abgebrochen.':'Speichern nicht möglich ('+(c||'unbekannt')+').'}render()},true);
 
 // Telefonliste für den geteilten Einsatzplan (Büro, Chauffeure, Springer, Beifahrer – alphabetisch)
 function telShare(){const G=[['Büro','Büro'],['Chauffeur','Chauffeure'],['Springer','Springer'],['Beifahrer','Beifahrer']];
