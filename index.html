@@ -379,6 +379,20 @@ table.btb .l{text-align:left}table.btb .r{text-align:right;white-space:nowrap}ta
  #app .ctl .vtg .acts button{padding:8px 2px!important;font-size:12px!important;min-height:0!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
  #app .cel{font-size:12px;padding:8px 10px!important;margin:6px 0!important}#app .cel ul{columns:2;column-gap:10px;margin:4px 0 0!important;padding:0!important}#app .cel li,#app .cel li label{break-inside:avoid;font-size:11.5px!important;line-height:1.3!important;padding:0!important;min-height:0!important}#app .ctl .acts .ul{display:none}#app .cel b{font-size:13px}#h{font-size:18px!important}#app .cel input[type=checkbox]{width:14px;height:14px;margin:0 3px 0 0}
 }
+</style><style>
+.req{max-width:1040px;background:#fff;border:1px solid #bbf7d0;border-left:5px solid #16a34a;border-radius:12px;padding:10px 14px;margin:10px 0;font-size:13.5px;box-sizing:border-box}
+.reqh{font-weight:800;font-size:15px;margin-bottom:4px;display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none}.req.min{padding:7px 14px;overflow:hidden;max-width:min(1040px,100%)}@media(max-width:760px){.req.min .reqh{flex-wrap:wrap}.req.min .reqh em{flex-basis:100%;order:5}}.req.min .reqh{margin:0}.reqh em{font-style:normal;font-weight:500;font-size:12.5px;color:#475569;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.reqh .reqt2{margin-left:auto;font-size:12px!important;padding:3px 10px!important;min-height:0!important;border-radius:8px;font-weight:600;flex-shrink:0}.reqh span.o{background:#fef3c7!important;color:#92400e!important}.reqh span{font-weight:600;font-size:12px;background:#dcfce7;color:#166534;border-radius:8px;padding:1px 8px;margin-left:6px}
+.reqr{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid #f1f5f9}.reqt{flex:1;min-width:0}.reqt small{color:#64748b}.reqm{font-size:12.5px;color:#0e7490;margin-top:2px}
+.reqa{font-size:12px;font-weight:700;border-radius:7px;padding:1px 7px}.reqa.f{background:#dbeafe;color:#1e3a8a}.reqa.k{background:#ede9fe;color:#4c1d95}
+.reqz{font-size:11.5px;font-weight:700;border-radius:7px;padding:1px 7px}.reqz.u{background:#e0f2fe;color:#075985}.reqz.s{background:#f5f3ff;color:#5b21b6}.reqb{display:flex;gap:6px;flex-shrink:0}.reqb button{padding:6px 10px!important;border-radius:8px;font-weight:700;min-height:0!important;font-size:12.5px}.reqb .ok{background:#16a34a!important;color:#fff;border-color:#15803d!important}.reqr.done{background:#f8fafc;border-radius:8px;padding:6px 8px;margin-top:4px}.reqb .wa{background:#25d366;color:#fff;border-radius:8px;padding:6px 12px;font-weight:700;font-size:12.5px;text-decoration:none;white-space:nowrap}.reqf{font-size:11.5px;color:#64748b;margin-top:4px}
+@media(max-width:760px){.reqr{flex-wrap:wrap}.reqb{width:100%}.reqb button{flex:1}}
+</style><style>
+.rgt{background:#fff;border:1px solid #c7d2fe;border-left:5px solid #4f46e5;border-radius:12px;padding:10px 14px;margin:6px 0 12px;max-width:1180px}.rgth{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}.rgth span{font-size:12px;color:#64748b;flex:1}
+.rgt .wrap{width:auto!important;max-width:100%;overflow-x:auto!important;max-height:none;border:1px solid #e2e8f0;border-radius:10px}table.rgtt th{position:static!important;font-size:11.5px!important;white-space:nowrap}table.rgtt td{padding:3px 5px!important}
+.rgtc{width:34px;height:28px;padding:0!important;min-height:0!important;border-radius:7px;font-size:14px}.rgtc.w{background:#dcfce7!important;border-color:#bbf7d0!important}.rgtc.r{background:#e0f2fe!important;border-color:#bae6fd!important}.rgtc.n{background:#f1f5f9!important;color:#94a3b8}.rgtc:disabled{opacity:.45}
+.rgtadm{font-size:12px;font-weight:700;color:#4f46e5;white-space:nowrap}.rgta{font-size:12px;white-space:nowrap;display:inline-flex;gap:4px;align-items:center}.rgtadd{display:flex;gap:6px;margin-top:8px}.rgtadd input{flex:1;max-width:320px;padding:6px 9px;border:1px solid #cbd5e1;border-radius:8px}
+#roToast{display:none;position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 16px;border-radius:12px;font-weight:600;z-index:999;box-shadow:0 8px 24px #0004}
+body.roview #app .acts [data-a=erg],body.roview #app .acts [data-a=vorwo],body.roview #app .acts [data-a=undo]{display:none!important}
 </style></head>
 <body>
 <h1 id="h">Personalplan</h1>
@@ -752,7 +766,7 @@ const missTxt=(d,i)=>canAck(d,i)&&isAck(d,i)?'':missRaw(d,i);const missB=(d,i)=>
 const missRaw=(d,i)=>{if(!need(i)||inWs(d,i))return '';const x=P(d)[i].filter(e=>!isVeh(e));if(!x.length)return '';
   const f=x.filter(e=>roleAt(e,i)==='F').length,b=x.filter(e=>roleAt(e,i)==='B').length,p=[];
   if(f<1)p.push(drvTxt(i));if(f+b<3&&f>=1)p.push((3-f-b)+' Beifahrer fehlt');else if(f<1&&b<2)p.push((2-b)+' Beifahrer fehlt');return p.join(' · ')};
-function render(){logMute=true;try{render0()}finally{logMute=false}try{logBase()}catch(e){}try{decor()}catch(e){console.error(e)}try{evFit()}catch(e){}try{window.kFer&&kFer();window.kRes&&kRes();window.k4&&k4()}catch(e){console.error(e)}try{if(tab==='plan'){const c=document.querySelector('#app .ctl'),h=celHtml();if(c&&h)c.insertAdjacentHTML('afterend',h)}}catch(e){console.error(e)}try{frMark()}catch(e){console.error(e)}}
+function render(){logMute=true;try{render0()}finally{logMute=false}try{logBase()}catch(e){}try{decor()}catch(e){console.error(e)}try{evFit()}catch(e){}try{window.kFer&&kFer();window.kRes&&kRes();window.k4&&k4()}catch(e){console.error(e)}try{if(tab==='plan'){const c=document.querySelector('#app .ctl'),h=celHtml();if(c&&h)c.insertAdjacentHTML('afterend',h);const rq=tabOk('fer')?reqHtml():'';if(c&&rq)c.insertAdjacentHTML('afterend',rq);if(!tabOk('kdoc'))document.querySelectorAll('#app .celarv,#app .celdoc').forEach(x=>x.remove());const ce=document.querySelector('#app .cel');if(ce&&!ce.querySelector('.celd,.celarv,.celdoc'))ce.remove()}}catch(e){console.error(e)}try{frMark()}catch(e){console.error(e)}}
 function evFit(){const p=document.querySelector('.evpg');if(!p)return;const PW=1040;p.style.zoom='';p.style.width='';const av=p.parentElement.clientWidth;if(av>0&&av<PW){p.style.width=PW+'px';p.style.maxWidth='none';p.style.zoom=String(av/PW)}else{p.style.maxWidth=''}}
 function render0(){try{if(tab==='plan'&&isPhone()&&vw!=='card'){vw='card'}}catch(e){}try{document.body.classList.toggle('tplan',tab==='plan')}catch(e){}try{document.body.classList.toggle('mobv',tab==='plan'&&vw==='mob')}catch(e){}
   syncKO();
@@ -760,14 +774,15 @@ function render0(){try{if(tab==='plan'&&isPhone()&&vw!=='card'){vw='card'}}catch
   {const g=dropAbsent();if(g.length){msg='Abwesende aus der Einteilung entfernt: '+g.slice(0,8).join(', ')+(g.length>8?' … (+'+(g.length-8)+')':'');save()}}
   document.getElementById('h').textContent='Personalplan KW '+kw(S.wk)+' / '+kwy(S.wk);
   const a=document.getElementById('app');
-  const B=(k,ic,t)=>`<button class="${tab===k?'on':''}" data-a="${k}"><span class="ti">${ic}</span>${t}</button>`;
+  if(!tabOk(tab)){const f=RT.map(x=>x[0]).find(x=>x!=='kdoc'&&tabOk(x));if(f)tab=f}if(tab==='kon'&&(konV==='d'||konV==='a')&&!tabOk('kdoc'))konV='k';try{document.body.classList.toggle('roview',rOn()&&!isAdm()&&curLvl()==='r')}catch(e){}
+  const B=(k,ic,t)=>tabOk(k)?`<button class="${tab===k?'on':''}" data-a="${k}"><span class="ti">${ic}</span>${t}</button>`:'';
   const AB=(k,ic,t,c)=>`<button class="ab${c?' '+c:''}" data-a="${k}"><span class="ti">${ic}</span>${t}</button>`;
   const top=`<div class="navw"><div class="seg">${B('plan','📋','Wochenplan')}${B('res','👥','Ressourcen')}${B('fer','🏖','Ferienplan')}${B('ws','🔧','Werkstattplan')}${B('team','🪪','Team')}${B('kon','📇','Kontakte')}${B('bon','💰','Prämien')}${B('log','🕘','Protokoll')}</div></div>`;
   if(tab==='team'){a.innerHTML=top+teamHtml();return}
   if(tab==='kon'){a.innerHTML=top+kontHtml();return}
   if(tab==='bon'){a.innerHTML=top+bonHtml();return}
   if(tab==='log'){a.innerHTML=top+logHtml();return}
-  if(tab==='fer'){a.innerHTML=top+ferHtml();return}
+  if(tab==='fer'){a.innerHTML=top+(lvl('fer')==='w'?reqHtml():'')+ferHtml();return}
   if(tab==='ws'){a.innerHTML=top+wsHtml();return}
   if(tab==='res'){a.innerHTML=top+wkbar()+'<div id="resbox"></div>';return}
   const cf=conflicts();
@@ -827,7 +842,7 @@ function ferHtml(){
   return h+'</tbody></table></div><div class="lg">'+CODES.map(c=>`<i style="background:${c[3]}"></i>${c[0]}/${c[1]} ${c[2]}`).join(' ')+'<i style="background:#FED7AA"></i>50 = zu 50 % arbeitsfähig · <i style="background:#FECACA"></i>K50/UF50 = zu 50 % krank/Unfall (darf eingeteilt werden) <i class="we"></i>Wochenende</div>';
 }
 function teamHtml(){
-  let h=`<div class="st">${msg||'Funktion je Mitarbeiter wählen – die Liste teilt sich automatisch auf.'}</div>`;
+  let h=rgtHtml()+`<div class="st">${msg||'Funktion je Mitarbeiter wählen – die Liste teilt sich automatisch auf.'}</div>`;
   const MS=S.machines.filter((_,i)=>isReg(i)||isLag(i));
   h+=`<div class="st" style="margin:4px 0 8px"><button class="xs" data-a="fixtake">↻ Fixe Equipen aus KW ${kw(S.wk)} übernehmen</button> Neue Wochenpläne starten mit diesen Equipen (1. Beifahrer unter dem Chauffeur, dann 2.). Fehlt ein fixer Beifahrer, steht auf der Maschine «fehlt». Ansaat: Gomes Martins + Duarte Antonio.</div>`;
   h+=`<div class="wrap"><table class="tt"><thead><tr><th></th><th>Name</th><th>Funktion</th><th>Pers.-Nr. / Tel.</th><th>Fixe Maschine</th><th>Fz-Nr.</th><th>1. Beifahrer</th><th>2. Beifahrer</th><th>Austritt</th><th>Foto</th></tr></thead><tbody>`;
@@ -1237,7 +1252,7 @@ const konList=()=>{const out=[];KONG.forEach(([f,l])=>{const g=S.emps.filter(e=>
   const X=S.emps.filter(e=>(isExt(e)||isTmp(e))&&!gone(e)).sort((a,b)=>a.localeCompare(b,'de'));if(X.length)out.push(['Extern (WAKi / Temporäre)',X]);
   const O=S.emps.filter(e=>!isExt(e)&&!isTmp(e)&&!gone(e)&&!KONG.some(([f])=>f===(S.func[e]||''))).sort((a,b)=>a.localeCompare(b,'de'));if(O.length)out.push(['Ohne Funktion',O]);return out};
 function kontHtml(){
-  let h=`<div class="kon"><div class="konbar"><input id="kons" class="kons" placeholder="🔍 Name suchen …" value="${esc(konQ)}"><span class="seg sm"><button class="${konV==='k'?'on':''}" data-konv="k">▦ Kärtchen</button><button class="${konV==='l'?'on':''}" data-konv="l">☰ Liste</button><button class="${konV==='d'?'on':''}" data-konv="d">📋 Dokumente</button><button class="${konV==='a'?'on':''}" data-konv="a">🚚 ARV</button></span><label class="fb xs" title="Personaldaten-Datei (.json) einlesen">📥 Personaldaten laden<input type="file" accept=".json,application/json" data-konimp="1" hidden></label><button class="xs" data-a="konpdf">⬇ Telefonliste (PDF)</button><button class="xs" data-a="konxl">⬇ Telefonliste (Excel)</button></div>`;
+  let h=`<div class="kon"><div class="konbar"><input id="kons" class="kons" placeholder="🔍 Name suchen …" value="${esc(konQ)}"><span class="seg sm"><button class="${konV==='k'?'on':''}" data-konv="k">▦ Kärtchen</button><button class="${konV==='l'?'on':''}" data-konv="l">☰ Liste</button>${tabOk('kdoc')?`<button class="${konV==='d'?'on':''}" data-konv="d">📋 Dokumente</button><button class="${konV==='a'?'on':''}" data-konv="a">🚚 ARV</button>`:''}</span><label class="fb xs" title="Personaldaten-Datei (.json) einlesen">📥 Personaldaten laden<input type="file" accept=".json,application/json" data-konimp="1" hidden></label><button class="xs" data-a="konpdf">⬇ Telefonliste (PDF)</button><button class="xs" data-a="konxl">⬇ Telefonliste (Excel)</button></div>`;
   if(msg)h+=`<div class="st"><b>${esc(msg)}</b></div>`;
   const q=konQ.toLowerCase(),hid=e=>q&&!e.toLowerCase().includes(q)?' style="display:none"':'';
   const lnk=t=>t?`<a href="${telHref(t)}">${esc(t)}</a>`:'–',ml=m=>m?`<a href="mailto:${esc(m)}">${esc(m)}</a>`:'–';
@@ -1396,7 +1411,7 @@ function logHtml(){const L=S.log||[];const us=[...new Set(L.map(x=>x.u))].sort()
   const q=logF.q.toLowerCase();const R=L.filter(x=>(!logF.u||x.u===logF.u)&&(!logF.w||x.w===logF.w)&&(!q||x.x.toLowerCase().includes(q)));
   const fm=t=>{const d=new Date(t);return ['So','Mo','Di','Mi','Do','Fr','Sa'][d.getDay()]+' '+pad(d.getDate())+'.'+pad(d.getMonth()+1)+'. '+pad(d.getHours())+':'+pad(d.getMinutes())};
   let h=`<div class="vlog"><div class="vlh"><b>🕘 Änderungsprotokoll</b><span><input id="logq" placeholder="🔍 Suchen …" value="${esc(logF.q)}"><select id="logw"><option value="">alle Wochen</option>${ws.map(w=>`<option value="${w}"${logF.w===w?' selected':''}>KW ${kw(w)} (${dm(w)})</option>`).join('')}</select><select id="logu"><option value="">alle Personen</option>${us.map(u=>`<option${logF.u===u?' selected':''}>${esc(u)}</option>`).join('')}</select></span></div>`;
-  h+=R.length?`<table><thead><tr><th>Wann</th><th>Wer</th><th>Was</th><th>Woche / Tage</th></tr></thead><tbody>${R.slice(0,400).map(x=>`<tr><td class="t">${fm(x.t)}</td><td class="u">${esc(x.u)}</td><td class="ch${/entfernt|gelöscht|aufgehoben/.test(x.x)?' del':''}">${esc(x.x)}</td><td class="t">${x.w?'KW '+kw(x.w):''}${x.d?' · '+esc(x.d):''}</td></tr>`).join('')}</tbody></table>`:'<div class="st" style="padding:10px">Noch keine Einträge. Jede Änderung im Plan, Ferienplan, Werkstattplan, Team und bei den Kontakten wird ab jetzt hier aufgeführt.</div>';
+  h+=R.length?`<table><thead><tr><th>Wann</th><th>Wer</th><th>Was</th><th>Woche / Tage</th></tr></thead><tbody>${R.slice(0,400).map(x=>`<tr><td class="t">${fm(x.t)}</td><td class="u">${esc(x.u)}</td><td class="ch${/entfernt|gelöscht|aufgehoben|abgelehnt/.test(x.x)?' del':''}">${esc(x.x)}</td><td class="t">${x.w?'KW '+kw(x.w):''}${x.d?' · '+esc(x.d):''}</td></tr>`).join('')}</tbody></table>`:'<div class="st" style="padding:10px">Noch keine Einträge. Jede Änderung im Plan, Ferienplan, Werkstattplan, Team und bei den Kontakten wird ab jetzt hier aufgeführt.</div>';
   return h+`<div class="st" style="margin-top:6px">Wird automatisch bei jeder Änderung geschrieben · 90 Tage aufbewahrt</div></div>`}
 document.addEventListener('change',ev=>{const t=ev.target;if(!t||tab!=='log')return;if(t.id==='logw'){logF.w=t.value;render()}if(t.id==='logu'){logF.u=t.value;render()}});
 document.addEventListener('input',ev=>{const t=ev.target;if(!t||t.id!=='logq')return;logF.q=t.value;const q=t.value.toLowerCase();document.querySelectorAll('.vlog tbody tr').forEach(r=>{r.style.display=!q||r.children[2].textContent.toLowerCase().includes(q)?'':'none'})});
@@ -1614,6 +1629,79 @@ function bonPdf(T){const mc=document.createElement('canvas').getContext('2d');co
   const out=new Uint8Array(parts.reduce((a,b)=>a+b.length,0));let p=0;parts.forEach(b=>{out.set(b,p);p+=b.length});return out}
 async function bonExport(k){if(!dl){msg='Speichern ist in dieser Ansicht nicht möglich.';render();return}const T=bonTable(k.slice(0,2)),pdf=k.endsWith('pdf'),fn=T.file+(pdf?'.pdf':'.xlsx');
   try{await dl.save({filename:fn,data:pdf?bonPdf(T):bonXlsx(T)});msg='Datei gespeichert: '+fn}catch(er){const c=er&&er.code;msg=c==='declined'?'Speichern abgebrochen.':'Speichern nicht möglich ('+(c||'unbekannt')+').'}render()}
+
+
+// --- Absenz-Anfragen aus dem geteilten Link (nur Supabase) ---
+let REQ=[],reqT=null,reqBusy=false,REQD=[];let reqMin=false;try{reqMin=localStorage.getItem('pp_reqmin')==='1'}catch(e){}
+const waNum=t=>{let d=String(t||'').replace(/[^\d+]/g,'');if(d.startsWith('+'))d=d.slice(1);else if(d.startsWith('00'))d=d.slice(2);else if(d.startsWith('0'))d='41'+d.slice(1);return d.length>=9?d:''};
+const reqVn=n=>{const p=String(n).trim().split(/\s+/);return p[p.length-1]||n};
+async function reqLoad(){if(!window.__sb||reqBusy)return;reqBusy=true;try{const {data,error}=await window.__sb.from('pp_req').select('*').eq('status','offen').order('von');if(!error){const n=JSON.stringify(data||[]);if(n!==JSON.stringify(REQ)){REQ=data||[];if(tab==='plan'||tab==='fer')render()}}}catch(e){}reqBusy=false}
+function reqStart(){if(reqT||!window.__sb)return;reqLoad();reqT=setInterval(()=>{if(!document.hidden)reqLoad()},90000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)reqLoad()})}
+setTimeout(reqStart,2500);
+const reqEmp=n=>S.emps.find(e=>e===n)||S.emps.find(e=>hrNorm(e)===hrNorm(n));
+const reqCode=r=>r.abzug==='Stunden'?'KO':r.abzug==='Ferien'?'U':(r.art==='Ferien'?'U':'KO');
+const reqAbz=r=>r.abzug||(r.art==='Ferien'?'Ferien':'Stunden');
+const logAdd=(x,w,d)=>{S.log=[{t:new Date().toISOString(),u:logUser(),w:w||'',x,d:d||''},...(S.log||[])].slice(0,600)};
+const reqWk=d=>{const wd=(new Date(d+'T12:00').getDay()+6)%7;return ad(d,-wd)};
+const reqD=d=>d?d.slice(8)+'.'+d.slice(5,7)+'.'+d.slice(2,4):'';
+function reqHtml(){if(!REQ.length&&!REQD.length)return '';
+  const hd=`<div class="reqh" data-reqmin="1" title="${reqMin?'Anzeigen':'Minimieren'}">📨 Absenz-Anfragen <span class="${REQ.length?'o':''}">${REQ.length?REQ.length+' offen':'erledigt'}</span>${reqMin&&REQ.length?`<em>${esc(REQ.slice(0,3).map(r=>reqVn(r.name)+' '+reqD(r.von)).join(' · '))}${REQ.length>3?' …':''}</em>`:''}<button class="reqt2">${reqMin?'▸ anzeigen':'▾ minimieren'}</button></div>`;
+  if(reqMin)return `<div class="req min">${hd}</div>`;
+  return `<div class="req">${hd}${REQ.map(r=>{const e=reqEmp(r.name),wd=reqDays(r).length;
+    return `<div class="reqr"><div class="reqt"><b>${esc(r.name)}</b> <span class="reqa ${r.art==='Ferien'?'f':'k'}">${r.art==='Ferien'?'🏖 Ferien':'🌴 Frei'}</span> <span class="reqz ${reqCode(r)==='U'?'u':'s'}">${reqAbz(r)==='Ferien'?'📅 Abzug Ferien':'⏱ Abzug Stunden'}</span> ${reqD(r.von)}${r.bis!==r.von?' – '+reqD(r.bis):''} <small>(${wd} ${wd===1?'Tag':'Tage'})</small>${r.bem?`<div class="reqm">💬 ${esc(r.bem)}</div>`:''}${e?'':'<div class="reqm" style="color:#b91c1c">Name nicht in der App gefunden – bitte von Hand eintragen.</div>'}</div>
+    <div class="reqb">${e?`<button class="ok" data-reqok="${r.id}">✓ Bewilligen</button>`:''}<button data-reqno="${r.id}">✕ Ablehnen</button></div></div>`}).join('')}${REQD.map((d,i)=>`<div class="reqr done"><div class="reqt">${d.ok?'✅':'❌'} <b>${esc(d.name)}</b> ${d.ok?'bewilligt':'abgelehnt'}${d.grund?` <small>– ${esc(d.grund)}</small>`:''}<div class="reqm">Rückmeldung senden:</div></div><div class="reqb">${d.wa?`<a class="wa" href="https://wa.me/${d.wa}?text=${encodeURIComponent(d.txt)}" target="_blank" rel="noopener" data-reqwa="${i}">📱 WhatsApp</a>`:'<small style="color:#b91c1c">keine Handynummer</small>'}<button data-reqdx="${i}" title="Ausblenden">✕</button></div></div>`).join('')}<div class="reqf">Bewilligen trägt die Tage (Mo–Fr) im Ferienplan ein: Abzug Ferien = «U – Urlaub», Abzug Stunden = «KO – Kompensation». Der Mitarbeiter sieht den Status auch im Link unter «🌴 Absenz».</div></div>`}
+function reqDays(r){const out=[];let d=r.von;while(d&&d<=r.bis&&out.length<200){const wd=new Date(d+'T12:00').getDay();if(wd>0&&wd<6)out.push(d);d=ad(d,1)}return out}
+document.addEventListener('click',async ev=>{const t=ev.target.closest&&ev.target.closest('[data-reqok],[data-reqno],[data-reqdx],[data-reqwa],[data-reqmin]');if(!t)return;ev.stopPropagation();
+  if(t.dataset.reqmin){ev.preventDefault();reqMin=!reqMin;try{localStorage.setItem('pp_reqmin',reqMin?'1':'0')}catch(e){}render();return}
+  if(t.dataset.reqwa!==undefined){const i=+t.dataset.reqwa;setTimeout(()=>{REQD.splice(i,1);render()},800);return}
+  ev.preventDefault();if(t.dataset.reqdx!==undefined){REQD.splice(+t.dataset.reqdx,1);render();return}
+  const id=+(t.dataset.reqok||t.dataset.reqno),r=REQ.find(x=>x.id===id);if(!r)return;const ok=!!t.dataset.reqok;
+  const zr=reqD(r.von)+(r.bis!==r.von?' – '+reqD(r.bis):'');let grund='';if(ok){if(!confirm('Bewilligen: '+r.name+' – '+r.art+' '+zr+' ?'))return}else{const g=prompt('Ablehnen: '+r.name+' – '+r.art+' '+zr+'\n\nBegründung (freiwillig):','');if(g===null)return;grund=g.trim()}
+  const lt='Absenz-Anfrage '+(ok?'bewilligt':'abgelehnt')+': '+r.name+' – '+r.art+' '+zr+' (Abzug '+reqAbz(r)+')'+(ok?' → Ferienplan '+reqCode(r):'')+(grund?' – Grund: '+grund:'')+(r.bem?' – Bemerkung MA: '+r.bem:'');
+  if(ok){const e=reqEmp(r.name),c=reqCode(r);snap();S.cal[e]=S.cal[e]||{};reqDays(r).forEach(ds=>{S.cal[e][ds]=c;delete S.auto[e+'|'+ds]});logAdd(lt,reqWk(r.von),zr);save()}else{logAdd(lt,reqWk(r.von),zr);save()}
+  try{await window.__sb.from('pp_req').update({status:ok?'bewilligt':'abgelehnt',grund:grund||null,done_at:new Date().toISOString(),done_by:window.__ppUser||''}).eq('id',id)}catch(e){}
+  {const e=reqEmp(r.name),tel=e?(S.tel[e]||(konOf(e)||{}).telp||''):'',art=r.art==='Ferien'?'Ferien':'Frei',ab=logUser()==='Lokal'?'Büro WASP':logUser();
+    const txt='Hallo '+reqVn(r.name)+', deine Anfrage für '+art+(r.bis!==r.von?' vom '+reqD(r.von)+' bis '+reqD(r.bis):' am '+reqD(r.von))+(ok?' (Abzug '+reqAbz(r)+')':'')+' ist '+(ok?'bewilligt ✅':'leider abgelehnt ❌')+(grund?'\nGrund: '+grund:'')+'\nGruss '+ab;
+    REQD.unshift({name:r.name,ok,grund,wa:waNum(tel),txt})}
+  REQ=REQ.filter(x=>x.id!==id);msg=r.name+': '+r.art+' '+(ok?'bewilligt und im Ferienplan als '+reqCode(r)+' eingetragen (Abzug '+reqAbz(r)+')':'abgelehnt');render()},true);
+// ===== Rechte pro Person (nur Ausblenden in der App) =====
+const RT=[['plan','Wochenplan'],['res','Ressourcen'],['fer','Ferienplan'],['ws','Werkstatt'],['team','Team'],['kon','Kontakte'],['kdoc','Dokumente / ARV'],['bon','Prämien'],['log','Protokoll']];
+const myEm=()=>String(window.__ppUser||'').toLowerCase().trim();
+let ADMS=null;const dbAdm=()=>!!(ADMS&&ADMS.has(myEm()));
+const rOn=()=>!!(S.rights&&Object.keys(S.rights.u||{}).length&&myEm());
+const isAdm=()=>!rOn()||dbAdm();
+const lvl=t=>{if(isAdm())return 'w';const u=(S.rights.u||{}),r=u[myEm()]||u['*']||{};return r[t]||'w'};
+const tabOk=t=>lvl(t)!=='-';
+const curLvl=()=>tab==='kon'&&(konV==='d'||konV==='a')?lvl('kdoc'):lvl(tab);
+let rgtOpen=false,rgtUsers=null;
+async function rgtLoadUsers(){if(!window.__sb)return;try{let r=await window.__sb.from('pp_users').select('email,admin');if(r.error)r=await window.__sb.from('pp_users').select('email');const data=r.data||[];rgtUsers=data.map(x=>String(x.email||'').toLowerCase()).filter(Boolean).sort();const was=dbAdm();ADMS=new Set(data.filter(x=>x.admin===true).map(x=>String(x.email).toLowerCase()));if(rgtOpen||was!==dbAdm())render()}catch(e){ADMS=new Set()}}
+setTimeout(()=>{rgtLoadUsers()},2000);
+function rgtHtml(){if(!myEm()||!dbAdm())return '';
+  if(!rgtOpen)return `<div class="st" style="margin:4px 0 8px"><button class="xs" data-rgt="open">🔐 Rechte der Bearbeiter</button></div>`;
+  if(!myEm())return `<div class="rgt"><div class="rgth"><b>🔐 Rechte</b><button class="xs" data-rgt="close">✕ schliessen</button></div><div class="bnote">Rechte gibt es nur in der Online-Version mit Login.</div></div>`;
+  if(rgtUsers===null){rgtUsers=[];rgtLoadUsers()}
+  const R=S.rights||{u:{}},adm=[...(ADMS||[])],U=R.u||{};
+  const em=[...new Set([...rgtUsers,...adm,...Object.keys(U).filter(x=>x!=='*'),myEm()])].filter(Boolean).sort();
+  const ic={w:'✏️',r:'👁',['-']:'–'},tt={w:'bearbeiten',r:'nur ansehen',['-']:'nicht sichtbar'};
+  const row=(e,lbl)=>{const a=e!=='*'&&adm.includes(e),r=U[e]||{};return `<tr><td class="l"><b>${esc(lbl||e)}</b>${e===myEm()?' <small>(du)</small>':''}</td><td>${a?'<span class="rgtadm">★ Admin</span>':''}</td>${RT.map(([k])=>{const v=a?'w':(r[k]||'w');return `<td><button class="rgtc ${v==='w'?'w':v==='r'?'r':'n'}" data-rgtc="${esc(e)}|${k}" ${a?'disabled':''} title="${tt[v]}">${ic[v]}</button></td>`}).join('')}</tr>`};
+  return `<div class="rgt"><div class="rgth"><b>🔐 Rechte der Bearbeiter</b><span>✏️ bearbeiten · 👁 nur ansehen · – nicht sichtbar — Feld antippen zum Wechseln</span><button class="xs" data-rgt="close">✕ schliessen</button></div>
+  <div class="wrap"><table class="btb rgtt"><thead><tr><th class="l">Benutzer (E-Mail)</th><th>Admin</th>${RT.map(([,l])=>`<th>${l}</th>`).join('')}</tr></thead><tbody>${em.map(e=>row(e)).join('')}${row('*','Alle anderen / neue Benutzer')}</tbody></table></div>
+  <div class="rgtadd"><input id="rgtnew" placeholder="weitere E-Mail-Adresse …"><button class="xs" data-rgt="add">+ hinzufügen</button></div>
+  <div class="bnote">Admins (★) sehen und bearbeiten alles und nur sie sehen diese Tabelle. Wer Admin ist, legst du in Supabase fest (Tabelle pp_users, Spalte admin). Neue Personen müssen dort auch freigeschaltet sein. Hinweis: Die Register werden nur ausgeblendet – kein Schutz gegen technisch versierte Benutzer.</div></div>`}
+document.addEventListener('click',ev=>{const t=ev.target.closest&&ev.target.closest('[data-rgt],[data-rgtc]');if(!t)return;if(!dbAdm())return;ev.stopPropagation();ev.preventDefault();
+  if(t.dataset.rgt==='open'){rgtOpen=true;rgtUsers=null;render();return}
+  if(t.dataset.rgt==='close'){rgtOpen=false;render();return}
+  const ensure=()=>{S.rights=S.rights||{u:{}};S.rights.u=S.rights.u||{}};
+  if(t.dataset.rgt==='add'){const v=(document.getElementById('rgtnew').value||'').trim().toLowerCase();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){alert('Bitte gültige E-Mail eingeben.');return}ensure();S.rights.u[v]=S.rights.u[v]||{};save();render();return}
+  if(t.dataset.rgtc){const [e,k]=t.dataset.rgtc.split('|');ensure();const r=S.rights.u[e]=S.rights.u[e]||{};const v=r[k]||'w';r[k]=v==='w'?'r':v==='r'?'-':'w';if(r[k]==='w')delete r[k];logAdd('Rechte geändert: '+(e==='*'?'Alle anderen':e)+' – '+RT.find(x=>x[0]===k)[1]+': '+({w:'bearbeiten',r:'nur ansehen',['-']:'nicht sichtbar'})[r[k]||'w']);save();render();return}
+},true);
+
+// Nur-Ansicht: Änderungen blockieren
+const RO_OK='.navw *,[data-wk],#wkd,[data-fw],[data-wfw],[data-vw],[data-day],[data-konv],[data-konsort],#kons,[data-bonv],[data-bonp],[data-bony],[data-bonx],[data-k4n],[data-arvy],[data-celhide],[data-reqmin],[data-theme],#logq,#logw,#logu,a[href],[data-rgt],[data-rgtc],[data-rgtadm],#rgtnew,[data-a="versand"],[data-a="vclose"],[data-a="vhtml"],[data-a="vlcopy"],[data-a="vlink"],[data-a="vlsend"],[data-a="vprint"],[data-a="vxlsx"],[data-a="closeprev"],[data-a="ferxlsx"],[data-a="konpdf"],[data-a="konxl"],[data-a="cancel"],[data-sec]';
+let roT=null;const roMsg=()=>{let d=document.getElementById('roToast');if(!d){d=document.createElement('div');d.id='roToast';document.body.appendChild(d)}d.textContent='👁 Nur Ansicht – du kannst hier nichts ändern.';d.style.display='block';clearTimeout(roT);roT=setTimeout(()=>d.style.display='none',1800)};
+const roBlock=(ev,toast)=>{if(!rOn()||isAdm()||curLvl()!=='r')return;const t=ev.target;if(!t||!t.closest||!t.closest('#app,.evpg,.ovl,.modal,body'))return;if(t.closest(RO_OK))return;ev.stopPropagation();if(toast){ev.preventDefault();roMsg();if(ev.type==='change'||ev.type==='input')setTimeout(render,50)}};
+['click','change','input','submit'].forEach(n=>document.addEventListener(n,ev=>roBlock(ev,true),true));
+['pointerdown','mousedown','touchstart','dragstart','drop','keydown'].forEach(n=>document.addEventListener(n,ev=>roBlock(ev,false),true));
 
 // Telefonliste für den geteilten Einsatzplan (Büro, Chauffeure, Springer, Beifahrer – alphabetisch)
 function telShare(){const G=[['Büro','Büro'],['Chauffeur','Chauffeure'],['Springer','Springer'],['Beifahrer','Beifahrer']];

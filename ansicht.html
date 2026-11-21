@@ -29,10 +29,21 @@ html,body{margin:0;background:#e5e7eb;font:15px system-ui,Segoe UI,Arial,sans-se
 #msg{max-width:420px;margin:60px auto;background:#fff;border-radius:12px;padding:22px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.15)}
 button{font:13px system-ui,Arial;padding:5px 10px;border:1px solid #cbd5e1;border-radius:7px;background:#fff;cursor:pointer}
 @media print{#tel{display:none!important}#top{display:none}#wrap{padding:0}#pg{box-shadow:none;zoom:1!important}}
+#abs{position:fixed;top:0;right:0;bottom:0;width:340px;max-width:100%;z-index:21;background:#fff;box-shadow:-6px 0 24px rgba(0,0,0,.25);padding:12px 16px 24px;box-sizing:border-box;overflow:auto;font:14px system-ui,Arial}
+#abs[hidden],#absb[hidden]{display:none}#abs h3{margin:0 0 10px;font-size:16px;border-bottom:1.5px solid #111;padding-bottom:5px}
+#abs label{display:block;font-size:12.5px;color:#475569;margin-top:10px}#abs input,#abs select,#abs textarea{display:block;width:100%;box-sizing:border-box;margin-top:3px;padding:9px;border:1px solid #cbd5e1;border-radius:9px;font:15px system-ui,Arial;color:#111;background:#fff}
+#abs .seg2{display:flex;gap:6px;margin-top:4px}#abs .seg2 button{flex:1;padding:10px;font-size:14px;border-radius:9px}#abs .seg2 button.on{background:#2563eb;color:#fff;border-color:#2563eb}
+#abs .row{display:flex;gap:8px}#abs .row>label{flex:1}#abs .send{width:100%;margin-top:14px;padding:12px;font-size:15px;font-weight:700;background:#16a34a;color:#fff;border-color:#15803d;border-radius:10px}
+#abs .ok{background:#dcfce7;color:#166534;border-radius:10px;padding:14px;margin-top:10px;font-weight:600}#abs .er{background:#fee2e2;color:#991b1b;border-radius:10px;padding:10px;margin-top:10px}#absx{float:right;font-size:15px;padding:2px 10px}
+#mine{margin-top:18px;border-top:1px solid #e2e8f0;padding-top:10px}#mine h4{margin:0 0 6px;font-size:14px}#mine .mi{padding:7px 0;border-bottom:1px dotted #e2e8f0;font-size:13.5px}#mine .st{font-size:12px;font-weight:700;border-radius:7px;padding:1px 7px;margin-left:4px}#mine .st.o{background:#fef3c7;color:#92400e}#mine .st.b{background:#dcfce7;color:#166534}#mine .st.a{background:#fee2e2;color:#991b1b}#mine .gr{font-size:12.5px;color:#475569;margin-top:2px}
+@media(max-width:600px){#abs{width:100%}}
+@media print{#abs{display:none!important}}
 </style>
 <script src="supabase-config.js"></script>
 </head><body>
-<div id="top" hidden><span><b>Einsatzplan</b> · <span id="st"></span></span><span class="r"><button id="telb" hidden onclick="var t=document.getElementById('tel');t.hidden=!t.hidden">📞 Telefonliste</button><button onclick="print()">Drucken</button></span></div>
+<div id="top" hidden><span><b>Einsatzplan</b> · <span id="st"></span></span><span class="r"><button id="absb" hidden onclick="absOpen()">🌴 Absenz</button><button id="telb" hidden onclick="var t=document.getElementById('tel');t.hidden=!t.hidden">📞 Telefonliste</button><button onclick="print()">Drucken</button></span></div>
+<form name="absenz" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden><input name="form-name" value="absenz"><input name="bot-field"><input name="name"><input name="art"><input name="abzug"><input name="von"><input name="bis"><input name="bemerkung"><input name="kw"></form>
+<div id="abs" hidden></div>
 <div id="wrap"><div id="msg">Einsatzplan wird geladen …</div></div>
 <script>
 (function(){
@@ -41,10 +52,37 @@ function fail(t){wrap.innerHTML='<div id="msg">'+t+'</div>';document.getElementB
 function fit(){var p=document.getElementById('pg');if(!p)return;var w=Math.min(1,(window.innerWidth-20)/760);p.style.zoom=w<1?w:''}
 function show(r){if(r.updated_at===last)return;last=r.updated_at;
   var p=document.getElementById('pg');if(!p){wrap.innerHTML='<div id="pg"><iframe title="Einsatzplan"></iframe></div><div id="tel" hidden></div>';p=document.getElementById('pg')}
-  var f=p.querySelector('iframe');f.onload=function(){try{var d=f.contentDocument;var b=d.querySelector('button');if(b)b.remove();var tl=d.getElementById('pptel'),tp=document.getElementById('tel');var tb=document.getElementById('telb');if(tl&&tl.innerHTML.trim()){var op=!tp.hidden;tp.innerHTML='<button id="telx" onclick="document.getElementById(\'tel\').hidden=true">✕</button><h3>📞 Telefonliste</h3>'+tl.innerHTML;tp.hidden=!op;tb.hidden=false;tl.remove()}else{tp.hidden=true;tb.hidden=true}f.style.height=(d.documentElement.scrollHeight+4)+'px'}catch(e){}};
+  var f=p.querySelector('iframe');f.onload=function(){try{var d=f.contentDocument;var b=d.querySelector('button');if(b)b.remove();var tl=d.getElementById('pptel'),tp=document.getElementById('tel');var tb=document.getElementById('telb');try{NAMES=[].slice.call((tl||document).querySelectorAll('.tr>span:first-child')).map(function(x){return x.textContent.trim()}).filter(Boolean);if(NAMES.length)NAMES=NAMES.filter(function(v,i,a){return a.indexOf(v)===i}).sort(function(a,b){return a.localeCompare(b,'de')})}catch(e){}document.getElementById('absb').hidden=false;if(tl&&tl.innerHTML.trim()){var op=!tp.hidden;tp.innerHTML='<button id="telx" onclick="document.getElementById(\'tel\').hidden=true">✕</button><h3>📞 Telefonliste</h3>'+tl.innerHTML;tp.hidden=!op;tb.hidden=false;tl.remove()}else{tp.hidden=true;tb.hidden=true}f.style.height=(d.documentElement.scrollHeight+4)+'px'}catch(e){}};
   f.srcdoc=r.html;var t=new Date(r.updated_at);
   document.getElementById('st').textContent='Stand '+t.toLocaleDateString('de-CH')+' '+t.toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'});
   document.getElementById('top').hidden=false;var kw=new URLSearchParams(location.search).get('kw');if(/^\d{1,2}$/.test(kw||''))document.title='Einsatzplan WASP – KW '+kw;fit()}
+var NAMES=[],ART='Ferien',ABZ='Ferien';
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+window.absOpen=function(){var a=document.getElementById('abs');if(!a.hidden){a.hidden=true;return}document.getElementById('tel').hidden=true;var sv={};try{sv=JSON.parse(localStorage.getItem('pp_absn')||'{}')}catch(e){}
+  a.innerHTML='<button id="absx" onclick="document.getElementById(\'abs\').hidden=true">✕</button><h3>🌴 Absenz-Anfrage</h3>'+
+  '<label>Name<select id="an"><option value="">– bitte wählen –</option>'+NAMES.map(function(n){return '<option'+(sv.n===n?' selected':'')+'>'+esc(n)+'</option>'}).join('')+'</select></label>'+
+  '<label>Art</label><div class="seg2"><button type="button" data-art="Ferien" class="on">🏖 Ferien</button><button type="button" data-art="Frei">🌴 Frei</button></div>'+
+  '<label>Abzug</label><div class="seg2"><button type="button" data-abz="Ferien" class="on">📅 Abzug Ferien</button><button type="button" data-abz="Stunden">⏱ Abzug Stunden</button></div>'+
+  '<div class="row"><label>Von<input type="date" id="av"></label><label>Bis<input type="date" id="ab"></label></div>'+
+  '<label>Bemerkung (freiwillig)<textarea id="am" rows="3" maxlength="500" placeholder="z. B. halber Tag, Grund …"></textarea></label>'+
+  '<button class="send" id="as">Anfrage senden</button><div id="ar"></div><div id="mine"></div>';ART='Ferien';ABZ='Ferien';a.hidden=false;var setAbz=function(v){ABZ=v;[].forEach.call(a.querySelectorAll('[data-abz]'),function(x){x.classList.toggle('on',x.dataset.abz===v)})};
+  [].forEach.call(a.querySelectorAll('[data-abz]'),function(b){b.onclick=function(){setAbz(b.dataset.abz)}});
+  [].forEach.call(a.querySelectorAll('[data-art]'),function(b){b.onclick=function(){ART=b.dataset.art;setAbz(ART==='Ferien'?'Ferien':'Stunden');[].forEach.call(a.querySelectorAll('[data-art]'),function(x){x.classList.toggle('on',x===b)})}});
+  var av=document.getElementById('av'),ab=document.getElementById('ab');av.onchange=function(){if(!ab.value||ab.value<av.value)ab.value=av.value};
+  document.getElementById('as').onclick=absSend;document.getElementById('an').onchange=function(){absMine(this.value)};absMine(sv.n||'')};
+function absMine(n){var el=document.getElementById('mine');if(!el)return;if(!n){el.innerHTML='';return}el.innerHTML='<h4>Meine Anfragen</h4><div style="color:#64748b;font-size:13px">wird geladen …</div>';
+  fetch(C.url.replace(/\/$/,'')+'/rest/v1/rpc/pp_req_mine',{method:'POST',headers:{'apikey':C.anonKey,'Content-Type':'application/json'},body:JSON.stringify({t:k,n:n}),cache:'no-store'}).then(function(x){if(!x.ok)throw 0;return x.json()}).then(function(a){var f=function(d){return d.slice(8)+'.'+d.slice(5,7)+'.'+d.slice(2,4)};var e=document.getElementById('mine');if(!e)return;
+    e.innerHTML='<h4>Meine Anfragen</h4>'+((a&&a.length)?a.map(function(r){var c=r.status==='bewilligt'?'b':r.status==='abgelehnt'?'a':'o';return '<div class="mi">'+(r.art==='Ferien'?'🏖 Ferien':'🌴 Frei')+' '+f(r.von)+(r.bis!==r.von?' – '+f(r.bis):'')+(r.abzug?' <span style=\"color:#64748b;font-size:12px\">(Abzug '+esc(r.abzug)+')</span>':'')+'<span class="st '+c+'">'+(c==='b'?'✓ bewilligt':c==='a'?'✕ abgelehnt':'⏳ offen')+'</span>'+(r.grund?'<div class="gr">Grund: '+esc(r.grund)+'</div>':'')+'</div>'}).join(''):'<div style="color:#64748b;font-size:13px">Keine Anfragen in den letzten 4 Monaten.</div>')}).catch(function(){var e=document.getElementById('mine');if(e)e.innerHTML=''})}
+function absSend(){var n=document.getElementById('an').value,v=document.getElementById('av').value,b=document.getElementById('ab').value||v,m=document.getElementById('am').value.trim(),r=document.getElementById('ar'),btn=document.getElementById('as');
+  if(!n){r.innerHTML='<div class="er">Bitte Namen wählen.</div>';return}if(!v){r.innerHTML='<div class="er">Bitte Datum «Von» wählen.</div>';return}if(b<v){r.innerHTML='<div class="er">«Bis» liegt vor «Von».</div>';return}
+  btn.disabled=true;btn.textContent='Wird gesendet …';try{localStorage.setItem('pp_absn',JSON.stringify({n:n}))}catch(e){}
+  var kw=new URLSearchParams(location.search).get('kw')||'',ok1=false,ok2=false;
+  var p1=fetch(C.url.replace(/\/$/,'')+'/rest/v1/rpc/pp_req_add',{method:'POST',headers:{'apikey':C.anonKey,'Content-Type':'application/json'},body:JSON.stringify({t:k,n:n,a:ART,v:v,b:b,m:m,d:ABZ})}).then(function(x){ok1=x.ok}).catch(function(){});
+  var fd=new URLSearchParams({'form-name':'absenz',name:n,art:ART,abzug:ABZ,von:v,bis:b,bemerkung:m,kw:kw});
+  var p2=fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:fd.toString()}).then(function(x){ok2=x.ok}).catch(function(){});
+  Promise.all([p1,p2]).then(function(){var f=function(d){return d.slice(8)+'.'+d.slice(5,7)+'.'+d.slice(0,4)};
+    if(ok1||ok2){document.getElementById('abs').innerHTML='<button id="absx" onclick="document.getElementById(\'abs\').hidden=true">✕</button><h3>🌴 Absenz-Anfrage</h3><div class="ok">✓ Anfrage gesendet<br><br>'+esc(n)+'<br>'+ART+': '+f(v)+(b!==v?' – '+f(b):'')+'<br>Abzug '+ABZ+'</div><p style="color:#64748b;font-size:13px">Du erhältst Bescheid vom Büro. Bis dahin gilt die Anfrage noch nicht als bewilligt. Den Status siehst du hier unter «Meine Anfragen».</p><div id="mine"></div>';absMine(n)}
+    else{btn.disabled=false;btn.textContent='Anfrage senden';r.innerHTML='<div class="er">Senden hat nicht geklappt. Bitte später nochmals versuchen oder im Büro melden.</div>'}})}
 function load(first){
   if(!C.url||!C.anonKey){fail('App ist nicht eingerichtet.');return}
   if(!/^[0-9a-f]{32}$/.test(k)){fail('Ungültiger Link.');return}
