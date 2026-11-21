@@ -1751,8 +1751,9 @@ document.addEventListener('click',async ev=>{const b=ev.target.closest&&ev.targe
 
 // Telefonliste für den geteilten Einsatzplan (Büro, Chauffeure, Springer, Beifahrer – alphabetisch)
 function telShare(){const G=[['Büro','Büro'],['Chauffeur','Chauffeure'],['Springer','Springer'],['Beifahrer','Beifahrer']];
-  return '<div id="pptel" hidden>'+G.map(([f,l])=>{const g=S.emps.filter(e=>S.func[e]===f&&!isExt(e)&&!isTmp(e)&&!gone(e)).sort((a,b)=>a.localeCompare(b,'de'));if(!g.length)return '';
-    return '<div class="tg">'+l+'</div>'+g.map(e=>{const G=S.tel[e]||'',P=konOf(e).telp||'';const n=[G&&'<a href="'+telHref(G)+'"><b>'+esc(G)+'</b></a>',P&&'<a href="'+telHref(P)+'"><b>'+esc(P)+'</b>'+(G?' <small>P</small>':'')+'</a>'].filter(Boolean);return '<div class="tr"><span>'+esc(e)+'</span><span class="tn">'+(n.join('<br>')||'–')+'</span></div>'}).join('')}).join('')+'</div>'}
+  const ln=t=>t?'<a href="'+telHref(t)+'">'+esc(t)+'</a>':'–';
+  return '<div id="pptel" hidden><table class="tlt"><thead><tr><th>Nr.</th><th>Name</th><th>Tel. Privat</th><th>Tel. Geschäft</th></tr></thead>'+G.map(([f,l])=>{const g=S.emps.filter(e=>S.func[e]===f&&!isExt(e)&&!isTmp(e)&&!gone(e)).sort((a,b)=>a.localeCompare(b,'de'));if(!g.length)return '';
+    return '<tbody><tr class="tg"><td colspan="4">'+l+'</td></tr>'+g.map(e=>'<tr class="tlr"><td class="nr">'+esc(((S.pnr||{})[e]||((S.hr||{})[e]||{}).nr||'')+'')+'</td><td class="nm">'+esc(e)+'</td><td>'+ln(konOf(e).telp||'')+'</td><td>'+ln(S.tel[e]||'')+'</td></tr>').join('')+'</tbody>'}).join('')+'</table></div>'}
 // --- Einsatzplan per Link teilen (nur mit Supabase) ---
 let SHM=null,shT=null;
 const shOn=()=>!!window.__sb;
