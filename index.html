@@ -368,6 +368,17 @@ table.btb .l{text-align:left}table.btb .r{text-align:right;white-space:nowrap}ta
 @media(max-width:760px){.bkpi{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.bk{min-width:0}.bk div{font-size:17px}.bnav{margin-left:0;width:100%}.bnav b{white-space:normal;flex:1;min-width:0;font-size:13px}.bon .seg{flex-wrap:wrap;max-width:100%}.brule{gap:6px 12px}}
 </style><style>
 @media(min-width:1080px){#app .ctl{flex-wrap:nowrap;gap:8px}#app .ctl .vtg .seg button{padding-left:10px;padding-right:10px}#app .ctl .vtg .acts button{font-size:13px}#app .ctl .wkb,#app .ctl .vtg{flex-wrap:nowrap!important;gap:6px;white-space:nowrap}#app .ctl .vtg .acts{flex-wrap:nowrap;gap:6px;margin-left:2px}#app .ctl .vtg .acts button{padding:6px 9px}#app .ctl .wkb b{font-size:14px}#app .ctl .wkb input{max-width:130px}}
+</style><style>
+@media(max-width:760px){
+ #h{font-size:17px!important;margin:2px 0 0!important}
+ #app .navw{margin:6px 0!important}#app .navw .seg{display:grid!important;grid-template-columns:repeat(4,1fr);gap:3px!important;padding:3px!important;border-radius:11px}
+ #app .navw .seg button{padding:5px 2px!important;font-size:11px!important;min-height:0!important;line-height:1.15;display:flex;flex-direction:column;align-items:center;gap:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:8px}
+ #app .ctl{gap:6px!important}#app .ctl .wkb{flex-wrap:nowrap!important;gap:5px;width:100%}#app .ctl .wkb button{padding:6px 10px!important;min-height:0!important}#app .ctl .wkb b{font-size:13.5px;white-space:nowrap}#app .ctl .wkb input{max-width:118px;font-size:12px;padding:4px!important;margin-left:auto}
+ body.tplan #app .ctl .vtg>.seg{display:none!important}
+ #app .ctl .vtg{width:100%}#app .ctl .vtg .acts{display:grid!important;grid-template-columns:1.2fr 1.1fr .6fr 1.1fr;gap:5px!important;width:100%;margin:0!important}
+ #app .ctl .vtg .acts button{padding:8px 2px!important;font-size:12px!important;min-height:0!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ #app .cel{font-size:12px;padding:8px 10px!important;margin:6px 0!important}#app .cel ul{columns:2;column-gap:10px;margin:4px 0 0!important;padding:0!important}#app .cel li,#app .cel li label{break-inside:avoid;font-size:11.5px!important;line-height:1.3!important;padding:0!important;min-height:0!important}#app .ctl .acts .ul{display:none}#app .cel b{font-size:13px}#h{font-size:18px!important}#app .cel input[type=checkbox]{width:14px;height:14px;margin:0 3px 0 0}
+}
 </style></head>
 <body>
 <h1 id="h">Personalplan</h1>
@@ -743,7 +754,7 @@ const missRaw=(d,i)=>{if(!need(i)||inWs(d,i))return '';const x=P(d)[i].filter(e=
   if(f<1)p.push(drvTxt(i));if(f+b<3&&f>=1)p.push((3-f-b)+' Beifahrer fehlt');else if(f<1&&b<2)p.push((2-b)+' Beifahrer fehlt');return p.join(' · ')};
 function render(){logMute=true;try{render0()}finally{logMute=false}try{logBase()}catch(e){}try{decor()}catch(e){console.error(e)}try{evFit()}catch(e){}try{window.kFer&&kFer();window.kRes&&kRes();window.k4&&k4()}catch(e){console.error(e)}try{if(tab==='plan'){const c=document.querySelector('#app .ctl'),h=celHtml();if(c&&h)c.insertAdjacentHTML('afterend',h)}}catch(e){console.error(e)}try{frMark()}catch(e){console.error(e)}}
 function evFit(){const p=document.querySelector('.evpg');if(!p)return;const PW=1040;p.style.zoom='';p.style.width='';const av=p.parentElement.clientWidth;if(av>0&&av<PW){p.style.width=PW+'px';p.style.maxWidth='none';p.style.zoom=String(av/PW)}else{p.style.maxWidth=''}}
-function render0(){try{document.body.classList.toggle('mobv',tab==='plan'&&vw==='mob')}catch(e){}
+function render0(){try{if(tab==='plan'&&isPhone()&&vw!=='card'){vw='card'}}catch(e){}try{document.body.classList.toggle('tplan',tab==='plan')}catch(e){}try{document.body.classList.toggle('mobv',tab==='plan'&&vw==='mob')}catch(e){}
   syncKO();
   if(fixMV())save();
   {const g=dropAbsent();if(g.length){msg='Abwesende aus der Einteilung entfernt: '+g.slice(0,8).join(', ')+(g.length>8?' … (+'+(g.length-8)+')':'');save()}}
@@ -836,7 +847,7 @@ function teamHtml(){
   h+=`<details><summary>Daten sichern / wiederherstellen</summary><div class="st">Speicher: ${esc(psState)}. Ist die Cloud verfügbar, bleiben alle Eingaben auch nach Aktualisierungen und auf anderen Geräten erhalten. Zusätzlich kannst du eine Sicherung als Datei anlegen.</div><div class="bar"><button data-a="backup">Daten sichern</button>${window.__ppUser?`<button onclick="window.ppLogout&&ppLogout()">Abmelden (${esc(window.__ppUser)})</button>`:""}<label class="fb">Sicherung laden<input type="file" accept=".json,application/json" data-restore="1" hidden></label></div></details>`;
   return h;
 }
-const vtog=()=>`<div class="bar vtg" style="align-items:center"><div class="seg sm"><button class="${vw==='day'?'on':''}" data-vw="day">Tag</button><button class="${vw==='week'?'on':''}" data-vw="week">Woche</button>${tab==='plan'?`<button class="${vw==='card'?'on':''}" data-vw="card">Karten</button>`:''}${tab==='plan'&&(vw==='mob'||isPhone())?`<button class="${vw==='mob'?'on':''}" data-vw="mob">📱 Handy</button>`:''}</div>${tab==='plan'?`<span class="acts"><button class="erg" data-a="erg" title="Freie Plätze (z. B. wenn ein fixer Beifahrer fehlt) mit passendem Personal aus der Reserve füllen">➕ Ergänzen</button><button data-a="vorwo" title="Einteilung der Vorwoche in diese Woche übernehmen (Abwesende und Werkstatt werden berücksichtigt)">⤴ Vorwoche</button><button data-a="undo" title="Letzte Änderung rückgängig">↩ Zurück</button><button class="eza" data-a="versand">📤 Einsatzplan</button></span>`:''}</div>`;
+const vtog=()=>`<div class="bar vtg" style="align-items:center"><div class="seg sm"><button class="${vw==='day'?'on':''}" data-vw="day">Tag</button><button class="${vw==='week'?'on':''}" data-vw="week">Woche</button>${tab==='plan'?`<button class="${vw==='card'?'on':''}" data-vw="card">Karten</button>`:''}</div>${tab==='plan'?`<span class="acts"><button class="erg" data-a="erg" title="Freie Plätze (z. B. wenn ein fixer Beifahrer fehlt) mit passendem Personal aus der Reserve füllen">➕ Ergänzen</button><button data-a="vorwo" title="Einteilung der Vorwoche in diese Woche übernehmen (Abwesende und Werkstatt werden berücksichtigt)">⤴ Vorwoche</button><button data-a="undo" title="Letzte Änderung rückgängig">↩<span class="ul"> Zurück</span></button><button class="eza" data-a="versand">📤 Einsatzplan</button></span>`:''}</div>`;
 const dayTabs=()=>`<div class="dtabs">${DAYS.map((x,d)=>`<button class="${dayIdx===d?'on':''}" data-day="${d}">${x} <small>${dm(ad(S.wk,d))}</small>${tab==='plan'?`<div class="eqrow">${eqB(d)}</div>`:''}</button>`).join('')}</div>`;
 function dayHtml(d){
   const tgc=i=>sel&&sel.d===d&&tgt(i)?' tgt':'';
