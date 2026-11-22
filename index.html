@@ -408,6 +408,11 @@ body.roview #app .acts [data-a=erg],body.roview #app .acts [data-a=vorwo],body.r
 </style><style>
 table.cal th.vd.hol{background:#fb923c!important;color:#fff!important}table.cal td.cc.hol{background:#ffedd5}table.cal td.cc.hol:empty::after{content:'';}.lg i.hol{background:#fb923c}
 .infoc .infol{font-weight:800}.infoc .infom{flex:1 1 100%;min-width:0;border:1px solid #fdba74;border-radius:8px;padding:6px 9px;font:inherit;font-weight:700;color:#7c2d12;background:#fff}.infoc .infom::placeholder{font-weight:400;color:#c2410c99}
+</style><style>
+.holbar{max-width:1040px;margin:4px 0}.holp{max-width:1040px;width:100%;box-sizing:border-box;background:#fff;border:1px solid #fed7aa;border-left:5px solid #fb923c;border-radius:12px;padding:10px 14px;margin:6px 0}
+.holh{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}.holh span{display:flex;gap:6px}
+table.holt{width:100%;min-width:0!important;border-collapse:collapse;font-size:13px}table.holt td{min-width:0!important;padding:4px 6px!important;border-right:0!important;border-bottom:1px solid #f1f5f9;position:static!important;vertical-align:middle}table.holt td.d{white-space:nowrap;font-weight:700;width:120px}table.holt td.a{text-align:right;white-space:nowrap}table.holt tr.off td{color:#94a3b8;text-decoration:line-through}table.holt tr.off td.a{text-decoration:none}table.holt small{color:#64748b}
+.holadd{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.holadd input{width:auto!important;padding:6px 8px;border:1px solid #cbd5e1;border-radius:8px;font:inherit}.holadd #holnn{flex:1;min-width:180px}
 </style></head>
 <body>
 <h1 id="h">Personalplan</h1>
@@ -797,7 +802,7 @@ function render0(){try{if(tab==='plan'&&isPhone()&&vw!=='card'){vw='card'}}catch
   if(tab==='kon'){a.innerHTML=top+kontHtml();return}
   if(tab==='bon'){a.innerHTML=top+bonHtml();return}
   if(tab==='log'){a.innerHTML=top+logHtml();return}
-  if(tab==='fer'){a.innerHTML=top+(lvl('fer')==='w'?reqHtml():'')+ferHtml();return}
+  if(tab==='fer'){a.innerHTML=top+(lvl('fer')==='w'?reqHtml():'')+(lvl('fer')==='w'?holHtml():'')+ferHtml();return}
   if(tab==='ws'){a.innerHTML=top+wsHtml();return}
   if(tab==='res'){a.innerHTML=top+wkbar()+'<div id="resbox"></div>';return}
   const cf=conflicts();
@@ -1760,8 +1765,9 @@ document.addEventListener('click',async ev=>{const b=ev.target.closest&&ev.targe
 // --- Feiertage (Kanton Bern) für den Info-Balken ---
 function holYear(y){const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),mo=Math.floor((h+l-7*m+114)/31),da=((h+l-7*m+114)%31)+1;
   const ost=y+'-'+pad(mo)+'-'+pad(da),o={};o[y+'-01-01']='Neujahr';o[y+'-01-02']='Berchtoldstag';o[ad(ost,-2)]='Karfreitag';o[ad(ost,1)]='Ostermontag';o[ad(ost,39)]='Auffahrt';o[ad(ost,50)]='Pfingstmontag';o[y+'-08-01']='Nationalfeiertag';o[y+'-12-25']='Weihnachten';o[y+'-12-26']='Stephanstag';return o}
-const HOLC={};const holName=ds=>{const y=+ds.slice(0,4);if(!HOLC[y])HOLC[y]=holYear(y);return HOLC[y][ds]||''};
-function holWeek(wk){const out=[];for(let d=0;d<5;d++){const ds=ad(wk,d),H=holYear(+ds.slice(0,4));if(H[ds])out.push({ds,d,n:H[ds]})}return out}
+const HOLC={};const holAll=y=>{const o=Object.assign({},holYear(y)),X=S.holx||{};Object.keys(X.off||{}).forEach(d=>{if(d.startsWith(y+'-'))delete o[d]});Object.entries(X.add||{}).forEach(([d,n])=>{if(d.startsWith(y+'-'))o[d]=n});return o};
+const holName=ds=>{const y=+ds.slice(0,4);return holAll(y)[ds]||''};
+function holWeek(wk){const out=[];for(let d=0;d<5;d++){const ds=ad(wk,d),H=holAll(+ds.slice(0,4));if(H[ds])out.push({ds,d,n:H[ds]})}return out}
 const infoOf=wk=>{const L=(S.infoOff||{})[wk]?[]:(()=>{const H=holWeek(wk);[0,1,2,3,4].forEach(d=>{const ds=ad(wk,d);if(!H.some(x=>x.ds===ds)&&PE().some(e=>cd(e,ds)==='FT'))H.push({ds,d,n:''})});return H.sort((a,b)=>a.d-b.d)})(),m=((S.infoMsg||{})[wk]||'').trim();return m?[...L,{msg:m}]:L};
 const infoTxt=(L,em)=>L.map(x=>x.msg?(em?'📣 ':'')+x.msg:(em?'🎄 ':'')+DAYS[x.d]+' '+dm(x.ds)+' '+(x.n?x.n+' – Feiertag':'Feiertag')).join('   ·   ');
 function infoCtl(){if(tab!=='plan')return '';const L=holWeek(S.wk),off=!!(S.infoOff||{})[S.wk],m=(S.infoMsg||{})[S.wk]||'';
@@ -1769,6 +1775,26 @@ function infoCtl(){if(tab!=='plan')return '';const L=holWeek(S.wk),off=!!(S.info
 document.addEventListener('change',ev=>{const t=ev.target;if(!t||!t.dataset||!t.dataset.infomsg)return;ev.stopPropagation();const wk=t.dataset.infomsg,v=t.value.trim();S.infoMsg=S.infoMsg||{};if((S.infoMsg[wk]||'')===v)return;if(v)S.infoMsg[wk]=v;else delete S.infoMsg[wk];logAdd('Info-Text KW '+kw(wk)+': '+(v||'gelöscht'),wk);save();render()},true);
 document.addEventListener('keydown',ev=>{const t=ev.target;if(ev.key==='Enter'&&t&&t.dataset&&t.dataset.infomsg){ev.preventDefault();t.blur()}},true);
 document.addEventListener('change',ev=>{const t=ev.target;if(!t||!t.dataset||!t.dataset.infotog)return;ev.stopPropagation();const wk=t.dataset.infotog;S.infoOff=S.infoOff||{};if(t.checked)delete S.infoOff[wk];else S.infoOff[wk]=1;logAdd('Feiertag im Info-Balken KW '+kw(wk)+(t.checked?' eingeschaltet':' ausgeschaltet'),wk);save();render()},true);
+
+// --- Feiertage verwalten (Ferienplan) ---
+let holOpen=false,holY=+hrTd().slice(0,4);
+function holHtml(){const y=holY,D=holYear(y),X=S.holx||{add:{},off:{}},all=new Set([...Object.keys(D),...Object.keys(X.add||{}).filter(d=>d.startsWith(y+'-'))]);
+  const L=[...all].sort().map(d=>{const def=!!D[d],off=!!(X.off||{})[d],add=(X.add||{})[d];return {d,n:add||D[d],def,off,add:!!add}});
+  const wd=d=>['So','Mo','Di','Mi','Do','Fr','Sa'][new Date(d+'T12:00').getDay()];
+  if(!holOpen)return `<div class="holbar"><button class="xs" data-holx="open">🎄 Feiertage anpassen</button></div>`;
+  return `<div class="holp"><div class="holh"><b>🎄 Feiertage ${y}</b><span><button class="xs" data-holy="-1">◀ ${y-1}</button><button class="xs" data-holy="1">${y+1} ▶</button><button class="xs" data-holx="close">✕ schliessen</button></span></div>
+  <table class="holt"><tbody>${L.map(x=>`<tr class="${x.off?'off':''}"><td class="d">${wd(x.d)} ${dmy(x.d)}</td><td>${esc(x.n)}${x.def?'':' <small>(eigener)</small>'}${x.off?' <small>– ausgeschaltet</small>':''}</td><td class="a">${x.def&&!x.add?(x.off?`<button class="xs" data-holon="${x.d}">wieder ein</button>`:`<button class="xs" data-holoff="${x.d}">ausschalten</button>`):`<button class="xs" data-holdel="${x.d}">✕ löschen</button>`}</td></tr>`).join('')}</tbody></table>
+  <div class="holadd"><input type="date" id="holnd" min="${y}-01-01" max="${y}-12-31"><input id="holnn" placeholder="Name, z. B. Heiligabend (Betriebsferien)" maxlength="60"><button class="xs" data-holx="add">+ hinzufügen</button></div>
+  <div class="bnote">Standard: Feiertage Kanton Bern. Ausgeschaltete Feiertage erscheinen nicht mehr im Info-Balken und im Ferienplan. Eigene Feiertage erscheinen wie die normalen (orange im Ferienplan, im Info-Balken auf dem Plan).</div></div>`}
+document.addEventListener('click',ev=>{const t=ev.target.closest&&ev.target.closest('[data-holx],[data-holy],[data-holon],[data-holoff],[data-holdel]');if(!t||tab!=='fer')return;ev.stopPropagation();ev.preventDefault();
+  const X=S.holx=S.holx||{};X.add=X.add||{};X.off=X.off||{};const dd=d=>dmy(d);
+  if(t.dataset.holx==='open'){holOpen=true;render();return}if(t.dataset.holx==='close'){holOpen=false;render();return}
+  if(t.dataset.holy){holY+=+t.dataset.holy;render();return}
+  if(t.dataset.holoff){X.off[t.dataset.holoff]=1;logAdd('Feiertag ausgeschaltet: '+dd(t.dataset.holoff)+' '+holYear(+t.dataset.holoff.slice(0,4))[t.dataset.holoff]);save();render();return}
+  if(t.dataset.holon){delete X.off[t.dataset.holon];logAdd('Feiertag wieder eingeschaltet: '+dd(t.dataset.holon));save();render();return}
+  if(t.dataset.holdel){const n=X.add[t.dataset.holdel];delete X.add[t.dataset.holdel];logAdd('Eigener Feiertag gelöscht: '+dd(t.dataset.holdel)+' '+(n||''));save();render();return}
+  if(t.dataset.holx==='add'){const d=document.getElementById('holnd').value,n=document.getElementById('holnn').value.trim();if(!d||!n){alert('Bitte Datum und Name eingeben.');return}X.add[d]=n;delete X.off[d];logAdd('Feiertag hinzugefügt: '+dd(d)+' '+n);save();render()}
+},true);
 // Telefonliste für den geteilten Einsatzplan (Büro, Chauffeure, Springer, Beifahrer – alphabetisch)
 function telShare(){const G=[['Büro','Büro'],['Chauffeur','Chauffeure'],['Springer','Springer'],['Beifahrer','Beifahrer']];
   const ln=t=>t?'<a href="'+telHref(t)+'">'+esc(t)+'</a>':'–';
